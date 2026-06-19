@@ -89,7 +89,8 @@
         {
             try
             {
-                string codiceDaUsare = campoCodiceDaInserire.text;
+                string codiceDaUsare = campoCodiceDaInserire.text.Trim();
+                Debug.Log($"Tentativo di connessione alla lobby con il codice: '{codiceDaUsare}'");
 
                 // trova la lobby in base al codice da usare
                 lobbyAttuale = await LobbyService.Instance.JoinLobbyByCodeAsync(codiceDaUsare);
@@ -140,7 +141,6 @@
                 }
             }
         }
-
 
         public void AvviaGioco() {
             if(NetworkManager.Singleton.IsServer) {
