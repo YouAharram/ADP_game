@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
     public float moveSpeed = 5f;
 
@@ -16,29 +17,28 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (!IsOwner) return;
+
         Vector2 movement = Vector2.zero;
 
         if (Keyboard.current.wKey.isPressed) movement.y += 1;
         if (Keyboard.current.sKey.isPressed) movement.y -= 1;
         if (Keyboard.current.dKey.isPressed) movement.x += 1;
         if (Keyboard.current.aKey.isPressed) movement.x -= 1;
+        
         if (Keyboard.current.spaceKey.wasPressedThisFrame) { 
             animator.SetTrigger("Attack");
         }
 
-
         movement = movement.normalized;
 
-        // movimento
         transform.Translate(movement * moveSpeed * Time.deltaTime);
 
-        // flip orizzontale
         if (movement.x > 0)
             sr.flipX = false;
         else if (movement.x < 0)
             sr.flipX = true;
 
-        // animazione
         animator.SetFloat("Speed", movement.magnitude);
     }
 }
