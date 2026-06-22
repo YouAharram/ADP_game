@@ -1,11 +1,19 @@
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class Arrow : MonoBehaviour
 {
     private Vector2 puntoArrivo;
     private float velocitaFreccia;
     private bool inVolo = false;
+
+    private IObjectPool<Arrow> mangedPool;
     
+    // Setter per avere il pool di frecce
+    public void SetPool(IObjectPool<Arrow> pool) {
+        mangedPool = pool;
+    }
+
     public void Scocca(Vector2 arrivo, float velocita) 
     {
         puntoArrivo = arrivo;
@@ -27,8 +35,13 @@ public class Arrow : MonoBehaviour
             if((Vector2)transform.position == puntoArrivo) 
             {
                 // todo: aggiungere danno ai nemici
-                Destroy(gameObject);
+                ReturnToPool();
             }
         }
+    }
+
+    private void ReturnToPool() {
+        inVolo = false;
+        mangedPool.Release(this);
     }
 }

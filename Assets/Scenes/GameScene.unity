@@ -451,7 +451,7 @@ Transform:
   m_GameObject: {fileID: 770686408}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.802839, y: -2.9785302, z: 0}
+  m_LocalPosition: {x: 6.82, y: 3.88, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -469,7 +469,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f367820147f8151639e853eccaf8022c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ArrowManager
-  frecciaPrefab: {fileID: 3677207741398651455, guid: 6a5ad8deecc432f9f811d5ff06fa7290, type: 3}
+  frecciaPrefab: {fileID: 791630754908006745, guid: 6a5ad8deecc432f9f811d5ff06fa7290, type: 3}
+  capacitaIniziale: 20
+  capacitaMassima: 20
+--- !u!1 &1023334760
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1023334761}
+  m_Layer: 0
+  m_Name: EnemySpawnerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1023334761
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1023334760}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -10.86, y: 5.21, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1067137985
 GameObject:
   m_ObjectHideFlags: 0
@@ -3319,3 +3352,4 @@ SceneRoots:
   - {fileID: 2089556730}
   - {fileID: 770686409}
   - {fileID: 532834289}
+  - {fileID: 1023334761}
