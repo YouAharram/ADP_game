@@ -11,7 +11,7 @@ public class ClientBootstrap : MonoBehaviour
         if (!NetworkClient.isConnected)
         {
             Debug.Log("START CLIENT");
-            NetworkManager.singleton.networkAddress = "127.0.0.1";
+            NetworkManager.singleton.networkAddress = "192.168.1.3";
             NetworkManager.singleton.StartClient();
         }
     }
