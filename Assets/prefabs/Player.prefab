@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 7452165437986225517}
   - component: {fileID: 7630231421591971193}
   - component: {fileID: 2211612695639256851}
+  - component: {fileID: 7147279843343744436}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -364,3 +365,15 @@ MonoBehaviour:
   damage: 0
   maxHealth: 10
   speed: 5
+--- !u!114 &7147279843343744436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4411408235715332343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bf0a88ca2a33d76da1c94e91c00a2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCollisionHandler

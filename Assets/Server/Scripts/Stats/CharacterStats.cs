@@ -9,7 +9,7 @@ public abstract class CharacterStats : NetworkBehaviour
     [SerializeField] private int speed;
     
     [SyncVar] private int currentHealth;
-    [SyncVar] private bool isAttacking = false;
+    [SyncVar] private bool isAttacking;
    
     public event Action OnStateChanged;
 
@@ -24,7 +24,7 @@ public abstract class CharacterStats : NetworkBehaviour
     public override void OnStartServer()
     {
         base.OnStartServer();
-        
+        isAttacking = false;
         currentHealth = maxHealth; 
     }
     
