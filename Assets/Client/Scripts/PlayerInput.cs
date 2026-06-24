@@ -4,37 +4,34 @@ using UnityEngine.InputSystem;
 
 public class PlayerInput : NetworkBehaviour
 {
-
     private CharacterController playerController;
     
-    
-  
+    private Vector2 currentInput; 
+
     void Start()
     {
         playerController = GetComponent<CharacterController>();
     }
-
-    void Update()
-    {
-        
-    }
-    public void Attack(InputAction.CallbackContext context)
-    {
-        if (!isLocalPlayer) return;
-
-        if (context.performed)
-        {
-            CmdAttack();
-        }
-    }
-
     public void Movements(InputAction.CallbackContext context)
     {
         if (!isLocalPlayer) return;
+        currentInput = context.ReadValue<Vector2>();
+    }
 
-        Vector2 direction = context.ReadValue<Vector2>();
+    void Update()
+    {
+        if (!isLocalPlayer) return;
 
-        CmdMovements(direction);
+        if (currentInput != Vector2.zero)
+        {
+            CmdMovements(currentInput);
+        }
+    }
+
+    public void Attack(InputAction.CallbackContext context)
+    {
+        if (!isLocalPlayer) return;
+        if (context.performed) CmdAttack();
     }
 
     [Command]
@@ -48,6 +45,4 @@ public class PlayerInput : NetworkBehaviour
     {
         playerController.Move(direction);
     }
-    
-
 }
