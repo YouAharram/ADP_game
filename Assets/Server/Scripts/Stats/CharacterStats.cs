@@ -36,16 +36,20 @@ public abstract class CharacterStats : NetworkBehaviour
 
     public void AttackCharacter(CharacterStats characterStats)
     {
-        isAttacking = true;
-        OnStateChanged?.Invoke();
-
-        if (characterStats != null)
+        if (IsReadyToAttack())
         {
-            characterStats.TakeDamage(this.damage);
+            isAttacking = true;
+            OnStateChanged?.Invoke();
+
+            if (characterStats != null)
+            {
+                characterStats.TakeDamage(this.damage);
+            }
+
+            isAttacking = false;
+            OnStateChanged?.Invoke();   
         }
 
-        isAttacking = false;
-        OnStateChanged?.Invoke();
     }
 
     public void TakeDamage(int amount)
@@ -58,4 +62,9 @@ public abstract class CharacterStats : NetworkBehaviour
 
         OnStateChanged?.Invoke();
     }
+
+    protected virtual bool IsReadyToAttack()
+    {
+        return true;
+    } 
 }

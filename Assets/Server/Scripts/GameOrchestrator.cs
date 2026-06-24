@@ -1,10 +1,11 @@
 using UnityEngine;
 using Mirror;
+using System.Collections.Generic;
 public class GameOrchestrator : NetworkBehaviour
 {
-    // private List<PlayerStats> playerListStats;
-    // private List<AllyMobStats> allyListStats;
-    // private List<EnemyMobStats> enemyMobStats;
+    private List<PlayerStats> playerStats;
+    private List<AllyMobStats> allyListStats;
+    private List<EnemyMobStats> enemyMobStats;
 
     void Start()
     {
