@@ -6,6 +6,8 @@ public class PlayerInput : NetworkBehaviour
 {
 
     private CharacterController playerController;
+    
+    
   
     void Start()
     {
