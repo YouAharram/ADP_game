@@ -4,8 +4,8 @@ public class AllyDetector : CharacterDetector
 {
     [SerializeField] private LayerMask layerAlleati;
 
-    public override CharacterStats CharacterInRange(double chaseRange)
+    public override CharacterStats CharacterInRange(float chaseRange)
     {
-        return TrovaPiuVicino<AllyMobStats>((float)chaseRange, layerAlleati);
+        return TrovaPiuVicino<AllyMobStats>(chaseRange, layerAlleati);
     }
 }

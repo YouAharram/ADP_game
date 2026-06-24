@@ -4,8 +4,8 @@ public class EnemyDetector : CharacterDetector
 {
     [SerializeField] private LayerMask layerNemici;
 
-    public override CharacterStats CharacterInRange(double chaseRange)
+    public override CharacterStats CharacterInRange(float chaseRange)
     {
-        return TrovaPiuVicino<EnemyMobStats>((float)chaseRange, layerNemici);
+        return TrovaPiuVicino<EnemyMobStats>(chaseRange, layerNemici);
     }
 }

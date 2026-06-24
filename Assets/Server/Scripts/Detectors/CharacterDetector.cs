@@ -2,7 +2,7 @@ using UnityEngine;
 
 public abstract class CharacterDetector : MonoBehaviour
 { 
-    public abstract CharacterStats CharacterInRange(double chaseRange);
+    public abstract CharacterStats CharacterInRange(float chaseRange);
    
     protected T TrovaPiuVicino<T>(float raggio, LayerMask layerMask) where T : CharacterStats
     {
