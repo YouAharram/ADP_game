@@ -453,6 +453,7 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
+  gameOrchestrator: {fileID: 0}
 --- !u!4 &1718143507
 Transform:
   m_ObjectHideFlags: 0

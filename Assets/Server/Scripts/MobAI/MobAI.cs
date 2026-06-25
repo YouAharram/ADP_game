@@ -15,7 +15,7 @@ public abstract class MobAI : NetworkBehaviour
     protected Vector2 MyPosition => transform.position;
     protected CharacterDetector CharacterDetector => characterDetector;
 
-    void Start()
+    protected virtual void Start()
     {
         mobController = GetComponent<CharacterController>();
         characterDetector = GetComponent<CharacterDetector>();
