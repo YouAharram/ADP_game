@@ -14,7 +14,10 @@ public class PlayerAnimationObserver : NetworkBehaviour
         if (playerStats != null)
         {
             oldPosition = playerStats.GetPosition();
-            playerStats.OnStateChanged += UpdateObserver;
+            playerStats.OnAttacking += AnimationAttack;
+            playerStats.OnDamage += AnimationDamage;
+            playerStats.OnPositionChanged += AnimationMovements;
+            playerStats.OnDie += AnimationDie;
             animator = GetComponent<Animator>();
             sr = GetComponent<SpriteRenderer>();
         }
@@ -24,42 +27,32 @@ public class PlayerAnimationObserver : NetworkBehaviour
     void OnDestroy()
     {
         if (playerStats != null)
-            playerStats.OnStateChanged -= UpdateObserver;
+        {
+            playerStats.OnAttacking -= AnimationAttack;
+            playerStats.OnDamage -= AnimationDamage;
+            playerStats.OnPositionChanged -= AnimationMovements;
+            playerStats.OnDie -= AnimationDie;
+        }
     }
 
-    public void UpdateObserver()
+
+    [ClientRpc]
+    public void AnimationMovements()
     {
-        if (playerStats.CurrentHealth == 0)
+        Vector2 currentPosition = playerStats.GetPosition();
+        if (currentPosition == oldPosition)
         {
-            AnimationDie();
+            animator.SetFloat("Speed", 0f);
             return;
         }
 
-        if (playerStats.IsAttacking)
-        {
-            AnimationAttack();
-        }
-        Vector2 currentPosition = playerStats.GetPosition();
-        if (currentPosition != oldPosition)
-        {
-            Vector2 movement = (currentPosition - oldPosition).normalized;
-            AnimationMovements(movement);
-            oldPosition = currentPosition;
-        }
-        else
-        {
-            animator.SetFloat("Speed", 0f);
-        }
-    }
-
-    [ClientRpc]
-    public void AnimationMovements(Vector2 movement)
-    {
+        Vector2 movement = (currentPosition - oldPosition).normalized;
         if (movement.x > 0)
             sr.flipX = false;
         else if (movement.x < 0)
             sr.flipX = true; 
         animator.SetFloat("Speed", movement.magnitude);
+        oldPosition = currentPosition;
     }
     
     [ClientRpc]
@@ -68,6 +61,8 @@ public class PlayerAnimationObserver : NetworkBehaviour
         animator.SetTrigger("Attack");
     }
     
-    public void AnimationDie() { Debug.Log("Animazione Player Morte"); }
+    public void AnimationDie(CharacterStats characterStats) { Debug.Log("Animazione Player Morte"); }
+
+    public void AnimationDamage() { Debug.Log("Animazione Danno"); }
 
 }

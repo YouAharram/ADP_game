@@ -2,18 +2,22 @@ using UnityEngine;
 using Mirror;
 using System.Collections.Generic;
 
-public class GameOrchestrator : NetworkBehaviour
+public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
 {
-    private List<PlayerStats> playerList = new List<PlayerStats>();
-    private List<AllyMobStats> allyList;
-    private List<EnemyMobStats> enemyList;
+    private List<PlayerStats> players = new List<PlayerStats>();
+    private List<AllyMobStats> allies;
+    private List<EnemyMobStats> enemies;
     private GameObject skeletonPrefab;  
     [SerializeField] private Rect mapBounds;
+    private int aliveEnemies = 0;
+    private int alivePlayers = 0;
  
  
     public void addPlayer(PlayerStats playerStats)
     {
-        playerList.Add(playerStats);
+        players.Add(playerStats);
+        playerStats.OnDie += RemoveCharacter;
+        alivePlayers++;
     }
 
     public void StartGame()
@@ -21,29 +25,31 @@ public class GameOrchestrator : NetworkBehaviour
         GenerateSkeletons(10);
     }
 
-    void Start()
-    {   
-
-        // istanzia playerList con giocatori mob buoni e cattivi
-        // setta le statistiche di ogni entita
-        // avvia il ride
+    private void RemoveCharacter(CharacterStats characterStats)
+    {
+        characterStats.Accept(this);
+        Destroy(characterStats.gameObject);
     }
 
-    void Update()
+    public void VisitPlayer(PlayerStats playerStats)
     {
-        // controlla lo stato di tutti i character
-        // e in base al loro tipo concreto controlla 
-        // e esegue certe azioni
-        bool victory = true;
+        players.Remove(playerStats);
+        alivePlayers--;
+        if (alivePlayers == 0)
+            GameOver();
+    }
 
-        foreach (EnemyMobStats enemy in enemyList)
-        {
-            if (enemy.CurrentHealth > 0)
-            {
-                victory = false;
-            }
-        }
+    public void VisitEnemy(EnemyMobStats enemyMobStats)
+    {
+        enemies.Remove(enemyMobStats);
+        aliveEnemies--;
+        if (aliveEnemies == 0)
+            Win();
+    }
 
+    public void VisitAlly(AllyMobStats allyMobStats)
+    {
+        allies.Remove(allyMobStats);
     }
 
     private void GenerateSkeletons(int quantity)
@@ -57,6 +63,21 @@ public class GameOrchestrator : NetworkBehaviour
             skeletonStats.Damage = 10;
             skeletonStats.Speed = 2;
             skeletonStats.MaxHealth = 50;
+            skeletonStats.AttackPeriodicity = 100;
+            skeletonStats.OnDie += RemoveCharacter;
+            aliveEnemies++;
         }
     }
+
+    private void GameOver()
+    {
+        Debug.Log("Partita persa, tutti i player sono stati eliminati.");
+    }
+
+    private void Win()
+    {
+        Debug.Log("Partita vinta! Tutti i nemici sono stati eliminati");
+    }
+
+
 }
