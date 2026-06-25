@@ -4,10 +4,23 @@ using System.Collections.Generic;
 
 public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
 {
+    public static GameOrchestrator Instance { get; private set; }
+    
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        
+        Instance = this;
+    }
+    
     private List<PlayerStats> players = new List<PlayerStats>();
     private List<AllyMobStats> allies;
     private List<EnemyMobStats> enemies;
-    private GameObject skeletonPrefab;  
+    [SerializeField] private GameObject skeletonPrefab;  
     [SerializeField] private Rect mapBounds;
     private int aliveEnemies = 0;
     private int alivePlayers = 0;
@@ -28,7 +41,7 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
     private void RemoveCharacter(CharacterStats characterStats)
     {
         characterStats.Accept(this);
-        Destroy(characterStats.gameObject);
+        NetworkServer.Destroy(characterStats.gameObject);
     }
 
     public void VisitPlayer(PlayerStats playerStats)
@@ -41,7 +54,10 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
 
     public void VisitEnemy(EnemyMobStats enemyMobStats)
     {
-        enemies.Remove(enemyMobStats);
+        if(enemies != null)
+        { 
+            enemies.Remove(enemyMobStats);
+        }
         aliveEnemies--;
         if (aliveEnemies == 0)
             Win();
@@ -66,6 +82,8 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
             skeletonStats.AttackPeriodicity = 100;
             skeletonStats.OnDie += RemoveCharacter;
             aliveEnemies++;
+            
+            NetworkServer.Spawn(skeleton);
         }
     }
 

@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class MyNetworkManager : NetworkManager
 {
-    [SerializeField] private GameOrchestrator gameOrchestrator;
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         Debug.Log("Spawning player");
@@ -17,9 +16,14 @@ public class MyNetworkManager : NetworkManager
 
         NetworkServer.AddPlayerForConnection(conn, player);
 
-        gameOrchestrator = GetComponent<GameOrchestrator>();
-
-        gameOrchestrator.addPlayer(player.GetComponent<PlayerStats>());
+        if (GameOrchestrator.Instance != null)
+        {
+            GameOrchestrator.Instance.addPlayer(player.GetComponent<PlayerStats>());
+        }
+        else
+        {
+            Debug.LogError("GameOrchestrator.Instance è null");
+        }
 
     }
 
@@ -38,11 +42,10 @@ public class MyNetworkManager : NetworkManager
         
         if (sceneName == "GameScene")
         {
-            if (gameOrchestrator == null)
+            if (GameOrchestrator.Instance != null)
             {
-                gameOrchestrator = GetComponent<GameOrchestrator>();
+                GameOrchestrator.Instance.StartGame();
             }
-            gameOrchestrator.StartGame();
         }
     }
 
