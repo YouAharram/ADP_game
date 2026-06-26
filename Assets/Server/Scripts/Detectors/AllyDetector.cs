@@ -6,6 +6,6 @@ public class AllyDetector : CharacterDetector
 
     public override CharacterStats CharacterInRange(float chaseRange)
     {
-        return TrovaPiuVicino<AllyMobStats>(chaseRange, layerAlleati);
+        return TrovaPiuVicino<CharacterStats>(chaseRange, layerAlleati);
     }
 }

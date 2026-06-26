@@ -22,10 +22,10 @@ public class PlayerInput : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
 
-        if (currentInput != Vector2.zero)
-        {
+        // if (currentInput != Vector2.zero)
+        // {
             CmdMovements(currentInput);
-        }
+        // }
     }
 
     public void Attack(InputAction.CallbackContext context)

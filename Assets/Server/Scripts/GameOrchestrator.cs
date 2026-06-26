@@ -24,6 +24,14 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
     [SerializeField] private Rect mapBounds;
     private int aliveEnemies = 0;
     private int alivePlayers = 0;
+    
+    
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+        Debug.Log("GameOrchestrator: Avvio la partita!");
+        StartGame();
+    }
  
  
     public void addPlayer(PlayerStats playerStats)
@@ -35,6 +43,7 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
 
     public void StartGame()
     {
+        Debug.Log("Game orchestrator c'è");
         GenerateSkeletons(10);
     }
 

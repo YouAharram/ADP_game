@@ -199,10 +199,10 @@ MonoBehaviour:
   skeletonPrefab: {fileID: 4699449289732389676, guid: 321c668ea2d08e9fea3e9127697d8ac2, type: 3}
   mapBounds:
     serializedVersion: 2
-    x: 0
-    y: 0
-    width: 0
-    height: 0
+    x: 100
+    y: 100
+    width: -100
+    height: -100
 --- !u!4 &342642345
 Transform:
   m_ObjectHideFlags: 0

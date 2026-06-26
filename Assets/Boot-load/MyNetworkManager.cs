@@ -1,5 +1,6 @@
 using Mirror;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MyNetworkManager : NetworkManager
 {
@@ -8,7 +9,6 @@ public class MyNetworkManager : NetworkManager
         Debug.Log("Spawning player");
 
         Transform startPos = GetStartPosition();
-
         GameObject player = Instantiate(playerPrefab);
 
         if (startPos != null)
@@ -22,35 +22,18 @@ public class MyNetworkManager : NetworkManager
         }
         else
         {
-            Debug.LogError("GameOrchestrator.Instance è null");
+            Debug.LogError("Errore: GameOrchestrator non trovato! L'hai messo nella scena?");
         }
-
     }
 
     public override void OnServerConnect(NetworkConnectionToClient conn)
     {
         base.OnServerConnect(conn);
-
-        Debug.Log("Client connected → loading GameScene");
-
-        ServerChangeScene("GameScene");
-    }
-
-    public override void OnServerChangeScene(string sceneName)
-    {
-        base.OnServerChangeScene(sceneName);
         
-        if (sceneName == "GameScene")
+        if (SceneManager.GetActiveScene().name != "GameScene")
         {
-            if (GameOrchestrator.Instance != null)
-            {
-                GameOrchestrator.Instance.StartGame();
-            }
+            Debug.Log("Client connected → loading GameScene");
+            ServerChangeScene("GameScene");
         }
-    }
-
-    public override Transform GetStartPosition()
-    {
-        return base.GetStartPosition();
     }
 }

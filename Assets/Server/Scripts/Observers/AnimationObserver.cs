@@ -10,6 +10,8 @@ public class AnimationObserver : NetworkBehaviour
 
     void Start()
     {
+        animator = GetComponent<Animator>();
+        sr = GetComponent<SpriteRenderer>();
         characterStats = GetComponent<CharacterStats>();
         if (characterStats != null)
         {
@@ -18,8 +20,6 @@ public class AnimationObserver : NetworkBehaviour
             characterStats.OnDamage += AnimationDamage;
             characterStats.OnPositionChanged += AnimationMovements;
             characterStats.OnDie += AnimationDie;
-            animator = GetComponent<Animator>();
-            sr = GetComponent<SpriteRenderer>();
         }
     }
 
@@ -39,26 +39,33 @@ public class AnimationObserver : NetworkBehaviour
     [ClientRpc]
     public void AnimationMovements()
     {
-        Vector2 currentPosition = characterStats.GetPosition();
-        if (currentPosition == oldPosition)
+        if (animator != null && sr != null)
         {
-            animator.SetFloat("Speed", 0f);
-            return;
-        }
+            Vector2 currentPosition = characterStats.GetPosition();
+            if (currentPosition == oldPosition)
+            {
+                animator.SetFloat("Speed", 0f);
+                return;
+            }
 
-        Vector2 movement = (currentPosition - oldPosition).normalized;
-        if (movement.x > 0)
-            sr.flipX = false;
-        else if (movement.x < 0)
-            sr.flipX = true; 
-        animator.SetFloat("Speed", movement.magnitude);
-        oldPosition = currentPosition;
+            Vector2 movement = (currentPosition - oldPosition).normalized;
+            if (movement.x > 0)
+                sr.flipX = false;
+            else if (movement.x < 0)
+                sr.flipX = true;
+            animator.SetFloat("Speed", movement.magnitude);
+            oldPosition = currentPosition;
+        }
     }
     
     [ClientRpc]
     public void AnimationAttack()
     {
-        animator.SetTrigger("Attack");
+        if (animator != null)
+        {
+            Debug.Log("Sto attacando");
+            animator.SetTrigger("Attack");
+        }
     }
     
     public void AnimationDie(CharacterStats characterStats) { Debug.Log("Animazione Player Morte"); }
