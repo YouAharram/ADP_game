@@ -2,11 +2,13 @@ using UnityEngine;
 
 public abstract class CharacterDetector : MonoBehaviour
 { 
+    [SerializeField] private Vector2 centerOffset;
     public abstract CharacterStats CharacterInRange(float chaseRange);
    
     protected T TrovaPiuVicino<T>(float raggio, LayerMask layerMask) where T : CharacterStats
     {
-        Collider2D[] collidersNelRaggio = Physics2D.OverlapCircleAll(transform.position, raggio, layerMask);
+        Vector2 origin = (Vector2)transform.position + centerOffset;
+        Collider2D[] collidersNelRaggio = Physics2D.OverlapCircleAll(origin, raggio, layerMask);
 
         T bersaglioPiuVicino = null;
         float distanzaMinima = float.MaxValue;

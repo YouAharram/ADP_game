@@ -14,13 +14,20 @@ public abstract class CharacterStats : NetworkBehaviour
     public event Action OnAttacking;
     public event Action OnDamage;
     public event Action<CharacterStats> OnDie;
-
+    
+    private Rigidbody2D rb;
+    
     public int Damage { get => damage; set => damage = value; }
     public int MaxHealth { get => maxHealth; set => maxHealth = value; }
     public int CurrentHealth { get => currentHealth; }
     public int Speed { get => speed; set => speed = value; }
     
     public Vector2 GetPosition() => transform.position;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
 
     public override void OnStartServer()
     {

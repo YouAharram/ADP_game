@@ -6,8 +6,8 @@ public abstract class MobAI : NetworkBehaviour
     private CharacterController mobController;
     private CharacterDetector characterDetector;
     
-    [SerializeField] private float chaseRange; 
-    [SerializeField] private float hitRange;   
+    [SerializeField] public float chaseRange; 
+    [SerializeField] public float hitRange;   
     
     protected CharacterController MobController => mobController;
     protected float ChaseRange => chaseRange;
@@ -26,7 +26,7 @@ public abstract class MobAI : NetworkBehaviour
         if (!isServer) return;
 
         CharacterStats characterDetected = characterDetector.CharacterInRange(ChaseRange);
-        if (characterDetected != null)
+        if (characterDetected != null && CanBeTriggered())  
         {
             Trigger(characterDetected);
         }
@@ -36,6 +36,13 @@ public abstract class MobAI : NetworkBehaviour
         }
     }
 
+    protected virtual bool CanBeTriggered()
+    {
+        return true;
+    }
+
     protected virtual void MainGoal() {}
     protected virtual void Trigger(CharacterStats characterDetected) {}
+    
+   
 }

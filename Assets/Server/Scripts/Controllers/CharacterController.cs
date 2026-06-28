@@ -16,7 +16,7 @@ public class CharacterController : NetworkBehaviour
     [ServerCallback]
     public void Attack()
     {        
-        CharacterStats collidingCharacter = characterCollisionHandler.CollidingCharacter;
+        CharacterStats collidingCharacter = characterCollisionHandler.CollidingCharacter();
         characterStats.AttackCharacter(collidingCharacter);
         
     }
