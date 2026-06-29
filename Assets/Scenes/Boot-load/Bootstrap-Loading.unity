@@ -4799,7 +4799,6 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
-  state: 0
   lobbyPlayerPrefab: {fileID: 3089745289882174588, guid: 4e21a092b9fa9344e9947fdbb10b3f5f, type: 3}
 --- !u!4 &1718143507
 Transform:

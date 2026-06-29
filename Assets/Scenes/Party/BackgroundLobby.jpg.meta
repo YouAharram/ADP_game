@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2f7c190bab969e62b97e236b0e654ef6
+guid: 2929307641dbad0dd8a297b7e5ffcd22
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1347743237290855014
-    second: wmremove-transformed_0
+      213: -7197882925963860446
+    second: BackgroundLobby_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: wmremove-transformed_0
+      name: BackgroundLobby_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 800
-        height: 457
+        width: 1920
+        height: 864
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 66a082b655524b210800000000000000
-      internalID: 1347743237290855014
+      spriteID: 22623176d9bfb1c90800000000000000
+      internalID: -7197882925963860446
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      wmremove-transformed_0: 1347743237290855014
+      BackgroundLobby_0: -7197882925963860446
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

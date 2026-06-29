@@ -1,58 +1,83 @@
 using Mirror;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 public class MenuController : MonoBehaviour
 {
     public TMP_InputField nameInput;
+    public TMP_InputField partyCodeInput;
     public PopupController popup;
     public CanvasGroup menuGroup;
 
+    IntentMessage.IntentType pendingIntent;
+    string pendingPartyCode;
+
+    // -------------------------
+    // PLAY
+    // -------------------------
     public void OnPlayPressed()
     {
-        SendRequest(true);
+        StartFlow(IntentMessage.IntentType.QuickMatch);
     }
 
+    // -------------------------
+    // OPEN LOBBY
+    // -------------------------
     public void OnPartyPressed()
     {
-        SendRequest(false);
+        StartFlow(IntentMessage.IntentType.OpenLobby);
     }
 
-    void SendRequest(bool play)
+
+
+    // -------------------------
+    // CORE FLOW
+    // -------------------------
+    void StartFlow(IntentMessage.IntentType intent)
     {
+        if (string.IsNullOrWhiteSpace(nameInput.text))
+        {
+            popup.ShowPopup("Insert name");
+            return;
+        }
+
+        pendingIntent = intent;
+
         if (!NetworkClient.isConnected)
         {
-            popup.ShowPopup("Not connected to server");
-            return;
-        }
-
-        string name = nameInput.text;
-
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            popup.ShowPopup("Name is required");
-            return;
-        }
-
-        if (play)
-        {
-            NetworkClient.Send(new StartGameMessage
-            {
-                playerName = name
-            });
+            NetworkManager.singleton.StartClient();
+            NetworkClient.OnConnectedEvent += OnConnected;
         }
         else
         {
-            NetworkClient.Send(new StartPartyMessage
-            {
-                playerName = name
-            });
+            SendIntent();
         }
 
-        if (menuGroup != null)
+        SetInteractable(false);
+    }
+
+    void OnConnected()
+    {
+        NetworkClient.OnConnectedEvent -= OnConnected;
+        SendIntent();
+    }
+
+    void SendIntent()
+    {
+        NetworkClient.Send(new IntentMessage
         {
-            menuGroup.interactable = false;
-            menuGroup.blocksRaycasts = false;
-        }
+            playerName = nameInput.text,
+            intent = pendingIntent,
+            partyCode = pendingPartyCode
+        });
+
+        pendingPartyCode = null;
+    }
+
+    void SetInteractable(bool value)
+    {
+        if (menuGroup == null) return;
+        menuGroup.interactable = value;
+        menuGroup.blocksRaycasts = value;
     }
 }
