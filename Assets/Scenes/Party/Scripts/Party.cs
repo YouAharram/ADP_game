@@ -1,47 +1,35 @@
-using Mirror;
+using System;
+using System.Collections.Generic;
 
 public class Party
 {
     public string code;
-    public NetworkConnectionToClient leader;
+    public string leaderName;
 
-    public NetworkConnectionToClient[] slots;
+    public List<string> players = new();
+    public int maxPlayers;
 
     public Party(int maxPlayers)
     {
-        slots = new NetworkConnectionToClient[maxPlayers];
+        this.maxPlayers = maxPlayers;
     }
 
-    public int GetFreeSlot()
+    public int GetFreeSlots()
     {
-        for (int i = 0; i < slots.Length; i++)
-        {
-            if (slots[i] == null)
-                return i;
-        }
-        return -1;
+        return maxPlayers - players.Count;
     }
 
-    public int AddPlayer(NetworkConnectionToClient conn)
+    public bool AddPlayer(string playerName)
     {
-        int slot = GetFreeSlot();
+        if (players.Count >= maxPlayers)
+            return false;
 
-        if (slot == -1)
-            return -1;
-
-        slots[slot] = conn;
-        return slot;
+        players.Add(playerName);
+        return true;
     }
 
-    public void RemovePlayer(NetworkConnectionToClient conn)
+    public void RemovePlayer(string playerName)
     {
-        for (int i = 0; i < slots.Length; i++)
-        {
-            if (slots[i] == conn)
-            {
-                slots[i] = null;
-                break;
-            }
-        }
+        players.Remove(playerName);
     }
 }

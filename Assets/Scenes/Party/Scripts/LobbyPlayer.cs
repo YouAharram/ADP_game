@@ -9,15 +9,14 @@ public class LobbyPlayer : NetworkBehaviour
 
     public TMP_Text nameText;
 
-    public override void OnStartClient()
+    void Start()
     {
-        base.OnStartClient();
         UpdateName(playerName);
     }
 
-    void OnNameChanged(string oldValue, string newValue)
+    void OnNameChanged(string oldVal, string newVal)
     {
-        UpdateName(newValue);
+        UpdateName(newVal);
     }
 
     void UpdateName(string value)
