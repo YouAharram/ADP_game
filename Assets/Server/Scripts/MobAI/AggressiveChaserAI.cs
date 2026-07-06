@@ -1,17 +1,9 @@
 using UnityEngine;
 
-/// <summary>
-/// AI GENERICA per qualsiasi mob che insegue: se non e' "distratto" da un
-/// player vicino, punta verso l'edificio bersaglio e lo attacca quando e'
-/// a portata; se un player entra in TriggerRange, gli si avvicina e lo
-/// attacca appena e' a portata di HitRange.
-/// </summary>
 public class AggressiveChaserAI : MobAI
 {
-    [Tooltip("Se false, il mob ignora sempre i player e punta solo all'edificio")]
     [SerializeField] private bool canAggroPlayers = true;
 
-    [Tooltip("Distanza minima dal target attuale sotto la quale si considera 'gia' li' e non serve reagire di nuovo")]
     [SerializeField] private float triggerDistance = 5f;
 
     protected override bool CanBeTriggered()
