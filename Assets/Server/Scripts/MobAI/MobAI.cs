@@ -3,29 +3,34 @@ using Mirror;
 
 public abstract class MobAI : NetworkBehaviour
 {
-    private CharacterController mobController;
-    private CharacterDetector characterDetector;
+    [SerializeField] private float triggerRange;
     
-    [SerializeField] public float chaseRange; 
-    [SerializeField] public float hitRange;   
+    private CharacterEntity mobEntity;
+    private Detector detector; 
     
-    protected CharacterController MobController => mobController;
-    protected float ChaseRange => chaseRange;
-    protected float HitRange => hitRange;
-    protected Vector2 MyPosition => transform.position;
-    protected CharacterDetector CharacterDetector => characterDetector;
+    private Vector2 targetPosition;
+
+    protected CharacterEntity MobEntity => mobEntity;
+    protected Vector2 MyPosition => GetComponent<Rigidbody2D>().position;
+    protected Detector Detector => detector;
+    
+    public Vector2 TargetPosition 
+    {
+        get => targetPosition;
+        set => targetPosition = value;
+    }
 
     protected virtual void Start()
     {
-        mobController = GetComponent<CharacterController>();
-        characterDetector = GetComponent<CharacterDetector>();
+        mobEntity = GetComponent<CharacterEntity>();
+        detector = GetComponent<Detector>();
     }
     
     void Update()
     {
         if (!isServer) return;
 
-        CharacterStats characterDetected = characterDetector.CharacterInRange(ChaseRange);
+        Entity characterDetected = detector.CharacterInRange(triggerRange);
         if (characterDetected != null && CanBeTriggered())  
         {
             Trigger(characterDetected);
@@ -42,7 +47,7 @@ public abstract class MobAI : NetworkBehaviour
     }
 
     protected virtual void MainGoal() {}
-    protected virtual void Trigger(CharacterStats characterDetected) {}
+    protected virtual void Trigger(Entity characterDetected) {}
     
    
 }

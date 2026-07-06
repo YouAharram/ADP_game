@@ -1,7 +1,7 @@
 public interface CharacterVisitor
 {
-    void VisitPlayer(PlayerStats playerStats);
-    void VisitEnemy(EnemyMobStats enemyMobStats);
-    void VisitAlly(AllyMobStats allyMobStats);
+    void VisitPlayer(PlayerEntity playerStats);
+    void VisitEnemy(EnemyMobEntity enemyMobEntity);
+    void VisitAlly(AllyMobEntity allyMobEntity);
     
 }

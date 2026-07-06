@@ -4,26 +4,22 @@ using System.Reflection.PortableExecutable;
 
 public class CharacterController : NetworkBehaviour
 {
-    private CharacterStats characterStats;
-    private CollisionHandler characterCollisionHandler;
+    private PlayerEntity playerEntity;
 
     void Start()
     {
-        characterStats = GetComponent<CharacterStats>();
-        characterCollisionHandler = GetComponent<CollisionHandler>();
+        playerEntity = GetComponent<PlayerEntity>();
     }
-
+    
     [ServerCallback]
-    public void Attack()
-    {        
-        CharacterStats collidingCharacter = characterCollisionHandler.CollidingCharacter();
-        characterStats.AttackCharacter(collidingCharacter);
-        
+    public void TryAttackTargetAt(Vector2 clickPosition)
+    {
+        playerEntity.AttackCharacter(TargetInfo.FromPosition(clickPosition));
     }
 
     [ServerCallback]
     public void Move(Vector2 direction)
     {
-        characterStats.ChangePosition(direction);
+        playerEntity.ChangePosition(direction);
     }
 }

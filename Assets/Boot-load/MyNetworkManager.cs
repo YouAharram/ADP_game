@@ -18,7 +18,7 @@ public class MyNetworkManager : NetworkManager
 
         if (GameOrchestrator.Instance != null)
         {
-            GameOrchestrator.Instance.addPlayer(player.GetComponent<PlayerStats>());
+            GameOrchestrator.Instance.AddPlayer(player.GetComponent<PlayerEntity>());
         }
         else
         {

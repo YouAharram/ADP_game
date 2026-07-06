@@ -5,13 +5,17 @@ using UnityEngine.InputSystem;
 public class PlayerInput : NetworkBehaviour
 {
     private CharacterController playerController;
-    
     private Vector2 currentInput; 
+    
+    // Ci serve la telecamera per tradurre i pixel dello schermo in coordinate 2D
+    private Camera mainCam;
 
     void Start()
     {
         playerController = GetComponent<CharacterController>();
+        mainCam = Camera.main; 
     }
+
     public void Movements(InputAction.CallbackContext context)
     {
         if (!isLocalPlayer) return;
@@ -22,22 +26,31 @@ public class PlayerInput : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
 
-        // if (currentInput != Vector2.zero)
-        // {
-            CmdMovements(currentInput);
-        // }
+        CmdMovements(currentInput);
     }
 
     public void Attack(InputAction.CallbackContext context)
     {
         if (!isLocalPlayer) return;
-        if (context.performed) CmdAttack();
+        
+        if (context.performed) 
+        {
+            // 1. Leggiamo i pixel del mouse
+            Vector2 mouseScreenPosition = Mouse.current.position.ReadValue();
+
+            // 2. Traduciamo i pixel nella posizione del mondo 2D
+            Vector2 mouseWorldPosition = mainCam.ScreenToWorldPoint(mouseScreenPosition);
+
+            // 3. Inviamo al server le coordinate in cui abbiamo cliccato
+            CmdAttackAtPosition(mouseWorldPosition);
+        }
     }
 
     [Command]
-    private void CmdAttack()
+    private void CmdAttackAtPosition(Vector2 clickPosition)
     {
-        playerController.Attack();
+        // Chiamiamo il nuovo metodo del controller
+        playerController.TryAttackTargetAt(clickPosition);
     }
 
     [Command]

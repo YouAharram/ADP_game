@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
 {
     public static GameOrchestrator Instance { get; private set; }
-    
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -17,43 +17,60 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
         Instance = this;
     }
     
-    private List<PlayerStats> players = new List<PlayerStats>();
-    private List<AllyMobStats> allies;
-    private List<EnemyMobStats> enemies;
-    [SerializeField] private GameObject skeletonPrefab;  
+    private List<PlayerEntity> players = new List<PlayerEntity>();
+    private List<EnemyMobEntity> enemies = new List<EnemyMobEntity>();
+
+    [SerializeField] private GameObject castle;
+    [SerializeField] private List<GameObject> enemyPrefabs;
     [SerializeField] private Rect mapBounds;
+    private LevelManager levelManager;
+
+    private PlayerBaseStats playerBaseStats;
     private int aliveEnemies = 0;
     private int alivePlayers = 0;
     
-    
+    public Rect MapBounds { get => mapBounds;}
+    public List<GameObject> EnemyPrefabs { get => enemyPrefabs;}
+
     public override void OnStartServer()
     {
         base.OnStartServer();
         Debug.Log("GameOrchestrator: Avvio la partita!");
-        StartGame();
+        levelManager = GetComponent<LevelManager>();
+        levelManager.EnemyExtractor = new EnemyPrefabExpRarityExtractor();
+        playerBaseStats = GetComponent<PlayerBaseStats>();
+        StartLevel();
+    }
+
+    private void StartLevel()
+    {
+        players.ForEach(player => levelManager.SetPlayerStatistics(player, playerBaseStats));
+        levelManager.GenerateEnemies(this);
     }
  
  
-    public void addPlayer(PlayerStats playerStats)
+    public void AddPlayer(PlayerEntity playerStats)
     {
         players.Add(playerStats);
-        playerStats.OnDie += RemoveCharacter;
+        playerStats.OnDieServer += RemoveCharacter;
         alivePlayers++;
     }
 
-    public void StartGame()
+    private void AddEnemy(EnemyMobEntity enemyMobStats)
     {
-        Debug.Log("Game orchestrator c'è");
-        GenerateSkeletons(10);
+        enemies.Add(enemyMobStats);
+        enemyMobStats.OnDieServer += RemoveCharacter;
+        aliveEnemies++;
     }
 
-    private void RemoveCharacter(CharacterStats characterStats)
+
+    private void RemoveCharacter(Entity characterStats)
     {
         characterStats.Accept(this);
         NetworkServer.Destroy(characterStats.gameObject);
     }
 
-    public void VisitPlayer(PlayerStats playerStats)
+    public void VisitPlayer(PlayerEntity playerStats)
     {
         players.Remove(playerStats);
         alivePlayers--;
@@ -61,50 +78,57 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
             GameOver();
     }
 
-    public void VisitEnemy(EnemyMobStats enemyMobStats)
+    public void VisitEnemy(EnemyMobEntity enemyMobStats)
     {
-        if(enemies != null)
-        { 
-            enemies.Remove(enemyMobStats);
-        }
+        enemies.Remove(enemyMobStats);
         aliveEnemies--;
         if (aliveEnemies == 0)
             Win();
     }
 
-    public void VisitAlly(AllyMobStats allyMobStats)
+    public void VisitAlly(AllyMobEntity allyMobStats)
     {
-        allies.Remove(allyMobStats);
+        Debug.Log("Errore: Ally non previsto.");
     }
 
-    private void GenerateSkeletons(int quantity)
+    public void GenerateEnemy(GameObject enemyPrefab)
     {
-        for (int i = 0; i < quantity; i++)
-        {
-            float xPosition = Random.Range(mapBounds.min.x, mapBounds.max.x);
-            float yPosition = Random.Range(mapBounds.min.y, mapBounds.max.y);
-            GameObject skeleton = Instantiate(skeletonPrefab, new Vector2(xPosition, yPosition), Quaternion.identity);
-            EnemyMobStats skeletonStats = skeleton.GetComponent<EnemyMobStats>();
-            skeletonStats.Damage = 10;
-            skeletonStats.Speed = 2;
-            skeletonStats.MaxHealth = 50;
-            skeletonStats.AttackPeriodicity = 100;
-            skeletonStats.OnDie += RemoveCharacter;
-            aliveEnemies++;
+        GameObject enemy = Instantiate(
+            enemyPrefab, 
+            EnemyPositionSelector.RandomPosition(mapBounds), 
+            Quaternion.identity);
+        
+        enemy.GetComponent<MobAI>().TargetPosition = castle.GetComponent<Entity>().GetPosition();
+        EnemyMobEntity enemyStats = enemy.GetComponent<EnemyMobEntity>();
+        levelManager.SetEnemyStatistics(enemyStats, enemy.GetComponent<EnemyPrefabBaseStats>());
             
-            NetworkServer.Spawn(skeleton);
-        }
+        NetworkServer.Spawn(enemy);
+        AddEnemy(enemyStats);
     }
+
 
     private void GameOver()
     {
         Debug.Log("Partita persa, tutti i player sono stati eliminati.");
+        NetworkServer.DisconnectAll();
     }
 
     private void Win()
     {
-        Debug.Log("Partita vinta! Tutti i nemici sono stati eliminati");
+        Debug.Log("Livello" + levelManager.Level + " vinto! Tutti i nemici sono stati eliminati. Passaggio al livello successivo...");
+        if (levelManager.AnswerQuiz())
+        {
+            levelManager.LevelUp();
+            StartLevel();
+            
+        }
+        else
+        {
+            GameOver();
+        }
+        
     }
 
 
 }
+ 

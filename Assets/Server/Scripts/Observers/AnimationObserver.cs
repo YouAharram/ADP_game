@@ -1,75 +1,113 @@
 using UnityEngine;
-using Mirror;
+using System.Collections;
 
-public class AnimationObserver : NetworkBehaviour
+public class AnimationObserver : MonoBehaviour
 {
-    private CharacterStats characterStats;
-    private Vector2 oldPosition;
+    [SerializeField] private GameObject deathVFXPrefab;
+
+    private CharacterEntity characterEntity;
     private Animator animator;
     private SpriteRenderer sr;
+
+    private Vector2 lastPosition;
 
     void Start()
     {
         animator = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
-        characterStats = GetComponent<CharacterStats>();
-        if (characterStats != null)
+        characterEntity = GetComponent<CharacterEntity>();
+
+        if (characterEntity != null)
         {
-            oldPosition = characterStats.GetPosition();
-            characterStats.OnAttacking += AnimationAttack;
-            characterStats.OnDamage += AnimationDamage;
-            characterStats.OnPositionChanged += AnimationMovements;
-            characterStats.OnDie += AnimationDie;
+            lastPosition = characterEntity.GetPosition();
+
+            characterEntity.OnAttackingClient += AnimationAttack;
+            characterEntity.OnDamageClient += AnimationDamage;
+            characterEntity.OnDieClient += AnimationDeath;
         }
     }
 
-    
-    void OnDestroy()
+    private float checkInterval = 0.1f; // Controlla 10 volte al secondo
+    private float nextCheckTime = 0f;
+
+    private void Update()
     {
-        if (characterStats != null)
-        {
-            characterStats.OnAttacking -= AnimationAttack;
-            characterStats.OnDamage -= AnimationDamage;
-            characterStats.OnPositionChanged -= AnimationMovements;
-            characterStats.OnDie -= AnimationDie;
-        }
+        // Se non è ancora passato abbastanza tempo, salta l'Update
+        if (Time.time < nextCheckTime) return;
+
+        // Aggiorna il timer per il prossimo controllo
+        nextCheckTime = Time.time + checkInterval;
+        // Lettura locale di uno stato già sincronizzato da NetworkTransform
+        UpdateMovementAnimation();
     }
 
-
-    [ClientRpc]
-    public void AnimationMovements()
+    private void UpdateMovementAnimation()
     {
-        if (animator != null && sr != null)
-        {
-            Vector2 currentPosition = characterStats.GetPosition();
-            if (currentPosition == oldPosition)
-            {
-                animator.SetFloat("Speed", 0f);
-                return;
-            }
+        if (animator == null || sr == null || characterEntity == null) return;
 
-            Vector2 movement = (currentPosition - oldPosition).normalized;
-            if (movement.x > 0)
-                sr.flipX = false;
-            else if (movement.x < 0)
-                sr.flipX = true;
-            animator.SetFloat("Speed", movement.magnitude);
-            oldPosition = currentPosition;
+        Vector2 currentPosition = characterEntity.GetPosition();
+        Vector2 delta = currentPosition - lastPosition;
+
+        if (delta.sqrMagnitude < 0.0001f)
+        {
+            animator.SetFloat("Speed", 0f);
+            return;
         }
+
+        Vector2 movement = delta.normalized;
+        if (movement.x > 0) sr.flipX = false;
+        else if (movement.x < 0) sr.flipX = true;
+
+        animator.SetFloat("Speed", 1f);
+        lastPosition = currentPosition;
     }
-    
-    [ClientRpc]
-    public void AnimationAttack()
+
+    private void AnimationAttack()
     {
         if (animator != null)
         {
-            Debug.Log("Sto attacando");
             animator.SetTrigger("Attack");
         }
     }
-    
-    public void AnimationDie(CharacterStats characterStats) { Debug.Log("Animazione Player Morte"); }
 
-    public void AnimationDamage() { Debug.Log("Animazione Danno"); }
+    private void AnimationDamage()
+    {
+        if (sr != null)
+        {
+            StartCoroutine(FlashRedEffect());
+        }
+    }
 
+    private void AnimationDeath()
+    {
+        if (deathVFXPrefab != null)
+        {
+            Instantiate(deathVFXPrefab, transform.position, Quaternion.identity);
+        }
+        if (animator != null)
+        {
+            animator.SetTrigger("Die");
+        }
+    }
+
+    private IEnumerator FlashRedEffect()
+    {
+        Color originalColor = sr.color;
+        sr.color = Color.red;
+        yield return new WaitForSeconds(0.15f);
+        if (sr != null)
+        {
+            sr.color = originalColor;
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (characterEntity != null)
+        {
+            characterEntity.OnAttackingClient -= AnimationAttack;
+            characterEntity.OnDamageClient -= AnimationDamage;
+            characterEntity.OnDieClient -= AnimationDeath;
+        }
+    }
 }
