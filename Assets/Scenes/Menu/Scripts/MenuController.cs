@@ -31,4 +31,18 @@ public class MenuController : MonoBehaviour
         SceneFlowManager.Instance.playerName = nameInput.text;
         SceneFlowManager.Instance.GoToLobby();
     }
+
+    // --- NUOVA FUNZIONE: AZIONE PER IL TASTO QUIT ---
+    public void OnQuitPressed()
+    {
+        Debug.Log("[MENU] Chiusura del gioco in corso...");
+
+        #if UNITY_EDITOR
+        // Se siamo dentro l'Editor di Unity, fermiamo la modalità Play
+        UnityEditor.EditorApplication.isPlaying = false;
+        #else
+        // Se siamo nella build finale del gioco, chiudiamo l'applicazione eseguibile
+        Application.Quit();
+        #endif
+    }
 }

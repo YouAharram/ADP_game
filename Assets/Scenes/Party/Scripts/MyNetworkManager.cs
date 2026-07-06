@@ -141,4 +141,45 @@ public class MyNetworkManager : NetworkManager
         // Continua con la disconnessione standard di Mirror (rimozione del player, ecc.)
         base.OnServerDisconnect(conn);
     }
+
+
+    // --- CONTROLLO START PARTITA ---
+    public void CheckIfAllReady()
+    {
+        // Questo controllo deve eseguirlo solo il Server
+        if (!NetworkServer.active) return;
+
+        // Se non c'è nessuno, non partiamo
+        if (NetworkServer.connections.Count == 0) return;
+
+        bool allReady = true;
+
+        // Cicliamo su tutte le identità di rete attive per vedere se sono tutte pronte
+        foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values)
+        {
+            if (conn.identity != null)
+            {
+                LobbyPlayer lp = conn.identity.GetComponent<LobbyPlayer>();
+                if (lp != null && !lp.isReady)
+                {
+                    allReady = false;
+                    break;
+                }
+            }
+            else
+            {
+                // Se un client si sta ancora connettendo e non ha l'identity, aspettiamo
+                allReady = false; 
+            }
+        }
+
+        if (allReady)
+        {
+            Debug.Log("[SERVER] Tutti i giocatori sono PRONTI! Avvio della partita in corso...");
+            
+            // Cambia la scena di rete. Mirror sposterà in parallelo TUTTI i client connessi nella nuova scena
+            ServerChangeScene("GameScene"); // Sostituisci "GameScene" con il nome esatto della tua scena di gioco
+        }
+    }
+
 }
