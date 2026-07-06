@@ -259,7 +259,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   baseDamage: 15
-  baseHealth: 100
+  baseHealth: 100000
   baseSpeed: 3
 --- !u!114 &342642349
 MonoBehaviour:
@@ -803,11 +803,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  maxHealth: 100
-  damage: 0
-  speed: 0
-  hitRange: 0
-  attackPeriodicity: 1.5
 --- !u!61 &683444753
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -25087,11 +25082,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  maxHealth: 0
-  damage: 10
-  speed: 0
-  hitRange: 10
-  attackPeriodicity: 1.5
 --- !u!114 &1560560370
 MonoBehaviour:
   m_ObjectHideFlags: 0

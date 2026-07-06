@@ -329,9 +329,9 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  triggerRange: 0
+  triggerRange: 6
   canAggroPlayers: 1
-  triggerDistance: 5
+  triggerDistance: 2
 --- !u!114 &6741151077945596805
 MonoBehaviour:
   m_ObjectHideFlags: 0

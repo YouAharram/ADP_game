@@ -490,7 +490,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   fireOrigin: {x: 0.5, y: 0.5}
-  attackAnimationDelay: 0.5
+  attackAnimationDelay: 0.2
 --- !u!114 &-1126254138716582098
 MonoBehaviour:
   m_ObjectHideFlags: 0

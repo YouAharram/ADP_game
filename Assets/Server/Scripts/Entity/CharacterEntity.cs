@@ -4,11 +4,11 @@ using System;
 
 public abstract class CharacterEntity : Entity
 {
-    [SerializeField] private int damage;
-    [SerializeField] private int speed;
-    [SerializeField] private float hitRange;
+    private int damage;
+    private int speed;
+    private float hitRange;
 
-    [SerializeField] private float attackPeriodicity = 1.5f;
+    private float attackPeriodicity = 0.2f;
     private float lastAttackTime = -Mathf.Infinity;
 
     private AttackStrategy attackStrategy;
