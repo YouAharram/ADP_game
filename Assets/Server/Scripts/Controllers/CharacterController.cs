@@ -22,4 +22,11 @@ public class CharacterController : NetworkBehaviour
     {
         playerEntity.ChangePosition(direction);
     }
+    
+    [ServerCallback]
+    public void SetFacing(bool isFacingRight)
+    {
+        Debug.Log("Chiamo  SetFacing del playerEntity");
+        playerEntity.IsFacingRight = isFacingRight;
+    }
 }

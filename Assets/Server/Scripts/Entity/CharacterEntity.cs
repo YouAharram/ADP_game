@@ -5,15 +5,18 @@ using System;
 public abstract class CharacterEntity : Entity
 {
     private int damage;
-    private int speed;
+    private int speed = 5;
     private float hitRange;
 
     private float attackPeriodicity = 0.2f;
     private float lastAttackTime = -Mathf.Infinity;
-
+    
+    private bool isFacingRight = true;
+    
     private AttackStrategy attackStrategy;
 
     public event Action OnAttackingClient;
+    public event Action OnFlipDirectionClient;
 
     public int Damage
     {
@@ -37,6 +40,17 @@ public abstract class CharacterEntity : Entity
     {
         get => hitRange;
         set => hitRange = value;
+    }
+
+    public bool IsFacingRight
+    {
+        get => isFacingRight;
+        set
+        {
+            Debug.Log("SetIsFacing chiamato");
+            isFacingRight = value;
+            RpcNotifyFlipDirection();
+        }
     }
 
     protected void Awake()
@@ -76,5 +90,12 @@ public abstract class CharacterEntity : Entity
     private void RpcNotifyAttack()
     {
         OnAttackingClient?.Invoke();
+    }
+    
+    [ClientRpc]
+    private void RpcNotifyFlipDirection()
+    {
+        Debug.Log("Chiamo evento");
+        OnFlipDirectionClient?.Invoke();
     }
 }

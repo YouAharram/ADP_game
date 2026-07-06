@@ -6,8 +6,8 @@ public class PlayerInput : NetworkBehaviour
 {
     private CharacterController playerController;
     private Vector2 currentInput; 
+    private bool isFacingRight = true;
     
-    // Ci serve la telecamera per tradurre i pixel dello schermo in coordinate 2D
     private Camera mainCam;
 
     void Start()
@@ -27,6 +27,8 @@ public class PlayerInput : NetworkBehaviour
         if (!isLocalPlayer) return;
 
         CmdMovements(currentInput);
+
+        HandleFacingDirection();
     }
 
     public void Attack(InputAction.CallbackContext context)
@@ -35,21 +37,34 @@ public class PlayerInput : NetworkBehaviour
         
         if (context.performed) 
         {
-            // 1. Leggiamo i pixel del mouse
             Vector2 mouseScreenPosition = Mouse.current.position.ReadValue();
 
-            // 2. Traduciamo i pixel nella posizione del mondo 2D
             Vector2 mouseWorldPosition = mainCam.ScreenToWorldPoint(mouseScreenPosition);
 
-            // 3. Inviamo al server le coordinate in cui abbiamo cliccato
             CmdAttackAtPosition(mouseWorldPosition);
+        }
+    }
+    
+    private void HandleFacingDirection()
+    {
+        Vector2 mouseScreenPosition = Mouse.current.position.ReadValue();
+        Vector2 mouseWorldPosition = mainCam.ScreenToWorldPoint(mouseScreenPosition);
+
+        if (mouseWorldPosition.x > transform.position.x && !isFacingRight)
+        {
+            isFacingRight = true;
+            CmdChangeFacingDirection(isFacingRight);
+        }
+        else if (mouseWorldPosition.x < transform.position.x && isFacingRight)
+        {
+            isFacingRight = false;
+            CmdChangeFacingDirection(isFacingRight);
         }
     }
 
     [Command]
     private void CmdAttackAtPosition(Vector2 clickPosition)
     {
-        // Chiamiamo il nuovo metodo del controller
         playerController.TryAttackTargetAt(clickPosition);
     }
 
@@ -57,5 +72,12 @@ public class PlayerInput : NetworkBehaviour
     private void CmdMovements(Vector2 direction)
     {
         playerController.Move(direction);
+    }
+    
+    [Command]
+    private void CmdChangeFacingDirection(bool facingRight)
+    {
+        Debug.Log("Chiamo SetFacing del controller");
+        playerController.SetFacing(facingRight);
     }
 }

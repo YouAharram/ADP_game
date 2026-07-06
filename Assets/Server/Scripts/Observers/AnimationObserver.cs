@@ -24,6 +24,7 @@ public class AnimationObserver : MonoBehaviour
             characterEntity.OnAttackingClient += AnimationAttack;
             characterEntity.OnDamageClient += AnimationDamage;
             characterEntity.OnDieClient += AnimationDeath;
+            characterEntity.OnFlipDirectionClient += FlipDirection;
         }
     }
 
@@ -54,12 +55,14 @@ public class AnimationObserver : MonoBehaviour
             return;
         }
 
-        Vector2 movement = delta.normalized;
-        if (movement.x > 0) sr.flipX = false;
-        else if (movement.x < 0) sr.flipX = true;
-
         animator.SetFloat("Speed", 1f);
         lastPosition = currentPosition;
+    }
+
+    private void FlipDirection()
+    {
+        Debug.Log("FlipDirection chiamato in AnimationObserver");
+        sr.flipX = !sr.flipX;
     }
 
     private void AnimationAttack()
@@ -83,6 +86,10 @@ public class AnimationObserver : MonoBehaviour
         if (deathVFXPrefab != null)
         {
             Instantiate(deathVFXPrefab, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            Debug.Log("deathVFXPrefab è null porca pera!");
         }
         if (animator != null)
         {
@@ -108,6 +115,7 @@ public class AnimationObserver : MonoBehaviour
             characterEntity.OnAttackingClient -= AnimationAttack;
             characterEntity.OnDamageClient -= AnimationDamage;
             characterEntity.OnDieClient -= AnimationDeath;
+            characterEntity.OnFlipDirectionClient -= FlipDirection;
         }
     }
 }

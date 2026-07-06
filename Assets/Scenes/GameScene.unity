@@ -260,7 +260,7 @@ MonoBehaviour:
   syncInterval: 0
   baseDamage: 15
   baseHealth: 100000
-  baseSpeed: 3
+  baseSpeed: 7
 --- !u!114 &342642349
 MonoBehaviour:
   m_ObjectHideFlags: 0

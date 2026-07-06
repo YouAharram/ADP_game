@@ -45,7 +45,7 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
     private void StartLevel()
     {
         players.ForEach(player => levelManager.SetPlayerStatistics(player, playerBaseStats));
-        levelManager.GenerateEnemies(this);
+        // levelManager.GenerateEnemies(this);
     }
  
  
