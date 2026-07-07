@@ -8,12 +8,12 @@ public class MyNetworkManager : NetworkManager
 {
     public GameObject lobbyPlayerPrefab;
     public GameObject gamePlayerPrefab;
+    
+    private List<GameObject> listPlayers = new List<GameObject>();
 
     private static ushort cachedPort = 0;
     private static string cachedPartyCode = "";
     private static bool argumentsParsed = false;
-
-    private GameOrchestrator gameOrchestrator;
 
     public override void Awake()
     {
@@ -74,7 +74,6 @@ public class MyNetworkManager : NetworkManager
     public override void OnStartServer()
     {
         base.OnStartServer();
-        gameOrchestrator = GameOrchestrator.Instance;
         NetworkServer.RegisterHandler<AuthMessage>(OnAuth);
         Debug.Log("[SERVER-BOOT] Server KCP pronto a ricevere connessioni.");
     }
@@ -128,10 +127,7 @@ public class MyNetworkManager : NetworkManager
 
         NetworkServer.AddPlayerForConnection(conn, player);
 
-        if (gameOrchestrator != null)
-        {
-            gameOrchestrator.AddPlayer(gamePlayerPrefab.GetComponent<PlayerEntity>());
-        }
+        listPlayers.Add(player);    
     }
 
     // --- NUOVO: Rileva quando un giocatore abbandona la lobby ---
@@ -186,16 +182,10 @@ public class MyNetworkManager : NetworkManager
             Debug.Log("[SERVER] Tutti i giocatori sono PRONTI! Avvio della partita in corso...");
             
             // Cambia la scena di rete. Mirror sposterà in parallelo TUTTI i client connessi nella nuova scena
-
-            if (gameOrchestrator != null)
-            {
-                gameOrchestrator.StartGame();
-            }
-            else
-            {
-                Debug.LogError("Errore: GameORchestrator non trovato!");
-            }
-            ServerChangeScene("GameScene"); 
+            
+            ServerChangeScene("GameScene");
+			listPlayers.ForEach(player => GameOrchestrator.Instance.AddPlayer(player));
+			GameOrchestrator.Instance.StartGame();
         }
     }
 

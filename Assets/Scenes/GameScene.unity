@@ -25076,7 +25076,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1560560361}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40ccfcda74c942bf9dc4830845c38cf0, type: 3}
+  m_Script: {fileID: 11500000, guid: 6ea909a11dfde65b98f7d63a54a095c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ArcherAI
   syncDirection: 0

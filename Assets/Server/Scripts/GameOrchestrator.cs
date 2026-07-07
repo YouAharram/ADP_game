@@ -4,17 +4,39 @@ using System.Collections.Generic;
 
 public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
 {
-    public static GameOrchestrator Instance { get; private set; }
+    private static GameOrchestrator instance;
+
+    // Il getter ora è semplicissimo: restituisce solo la variabile.
+    // Se è null, lancia un errore chiaro invece di fare casini.
+    public static GameOrchestrator Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                Debug.LogError($"[GameOrchestrator] Attenzione! Stai cercando di accedere all'Instance prima che l'oggetto si sia svegliato (Awake) o l'oggetto non è presente nella scena!");
+            }
+            return instance;
+        }
+    }
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        Debug.Log("[GameOrchestrator] Awake chiamato sul NOSTRO GameObject legittimo.");
+
+        // Controllo anti-duplicazione (Pattern Singleton classico)
+        if (instance != null && instance != this)
         {
-            Destroy(this.gameObject);
+            Debug.LogWarning($"[GameOrchestrator] Rilevato un duplicato nella scena su {gameObject.name}. Lo distruggo.");
+            Destroy(gameObject);
             return;
         }
-        
-        Instance = this;
+
+        // Assegnazione ufficiale dell'istanza
+        instance = this;
+
+        // Se vuoi che sopravviva ai cambi di scena (opzionale, valuta tu se serve)
+        // DontDestroyOnLoad(gameObject);
     }
     
     private List<PlayerEntity> players = new List<PlayerEntity>();
