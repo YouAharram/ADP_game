@@ -32,9 +32,8 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
     public Rect MapBounds { get => mapBounds;}
     public List<GameObject> EnemyPrefabs { get => enemyPrefabs;}
 
-    public override void OnStartServer()
-    {
-        base.OnStartServer();
+    public void StartGame()
+    {        
         Debug.Log("GameOrchestrator: Avvio la partita!");
         levelManager = GetComponent<LevelManager>();
         levelManager.EnemyExtractor = new EnemyPrefabExpRarityExtractor();
@@ -45,7 +44,7 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
     private void StartLevel()
     {
         players.ForEach(player => levelManager.SetPlayerStatistics(player, playerBaseStats));
-        // levelManager.GenerateEnemies(this);
+        levelManager.GenerateEnemies(this);
     }
  
  
@@ -86,11 +85,11 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
             Win();
     }
 
-    public void VisitAlly(AllyMobEntity allyMobStats)
+    public void VisitBuilding(BuildingEntity allyMobEntity)
     {
-        Debug.Log("Errore: Ally non previsto.");
+        throw new System.NotImplementedException();
     }
-
+    
     public void GenerateEnemy(GameObject enemyPrefab)
     {
         GameObject enemy = Instantiate(
@@ -116,17 +115,9 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
     private void Win()
     {
         Debug.Log("Livello" + levelManager.Level + " vinto! Tutti i nemici sono stati eliminati. Passaggio al livello successivo...");
-        if (levelManager.AnswerQuiz())
-        {
-            levelManager.LevelUp();
-            StartLevel();
-            
-        }
-        else
-        {
-            GameOver();
-        }
         
+        levelManager.LevelUp();
+        StartLevel();
     }
 
 

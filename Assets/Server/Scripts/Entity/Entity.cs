@@ -20,7 +20,15 @@ public abstract class Entity : NetworkBehaviour
     public event Action<Entity> OnDieServer;
     
     public Rigidbody2D Rb { get => rb; set => rb = value; }
-    public int MaxHealth { get => maxHealth; set => maxHealth = value; }
+    public int MaxHealth 
+    { 
+        get => maxHealth; 
+        set 
+        {
+            maxHealth = value; 
+            currentHealth = maxHealth;       
+        }
+    }
     public int CurrentHealth => currentHealth;
     public bool IsDead => isDead;
     

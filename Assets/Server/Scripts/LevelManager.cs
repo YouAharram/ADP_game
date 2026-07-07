@@ -60,11 +60,6 @@ public class LevelManager : NetworkBehaviour
         player.Speed = playerSpeedIncrement + playerBaseStats.BaseSpeed;
     }
 
-    public bool AnswerQuiz()
-    {
-        return true;
-    }
-
     public void LevelUp()
     {
         level++;

@@ -1,7 +1,7 @@
-public class BuildingEntity : AllyMobEntity
+public class BuildingEntity : Entity
 {
     public override void Accept(CharacterVisitor characterVisitor)
     {
-        characterVisitor.VisitAlly(this);
+        characterVisitor.VisitBuilding(this);
     }
 }

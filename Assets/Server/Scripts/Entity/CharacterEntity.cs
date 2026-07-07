@@ -53,7 +53,7 @@ public abstract class CharacterEntity : Entity
         }
     }
 
-    protected void Awake()
+    protected override void Awake()
     {
         base.Awake();
         attackStrategy = GetComponent<AttackStrategy>();
