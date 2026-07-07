@@ -2,6 +2,7 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
+using System.Collections.Generic; // <-- AGGIUNTO: Necessario per usare List<T>
 using kcp2k;
 
 public class MyNetworkManager : NetworkManager
@@ -119,7 +120,6 @@ public class MyNetworkManager : NetworkManager
         if (scene == "LobbyScene")
         {
             // --- LOGICA DI CONTROLLO SLOT AGGIORNATA ---
-            // Chiediamo al gestore degli slot una posizione sicuramente libera
             int slot = LobbySpawnManager.Instance.GetFirstFreeSlot(conn);
             player.transform.position = LobbySpawnManager.Instance.slots[slot].position;
             Debug.Log($"[SERVER] Assegnato slot numero: {slot} a {name}");
@@ -127,22 +127,25 @@ public class MyNetworkManager : NetworkManager
 
         NetworkServer.AddPlayerForConnection(conn, player);
 
-        listPlayers.Add(player);    
+        listPlayers.Add(gamePlayerPrefab);    
     }
 
-    // --- NUOVO: Rileva quando un giocatore abbandona la lobby ---
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
     {
         string scene = SceneManager.GetActiveScene().name;
         
         if (scene == "LobbyScene")
         {
-            // Diciamo al manager degli slot di liberare la sedia su cui era seduto questo client
             LobbySpawnManager.Instance.FreeSlot(conn);
             Debug.Log("[SERVER] Client disconnesso. Slot liberato nella Lobby.");
         }
 
-        // Continua con la disconnessione standard di Mirror (rimozione del player, ecc.)
+        // Se disconnette, ricordati di rimuoverlo anche dalla tua lista per evitare NullReference!
+        if (conn.identity != null && listPlayers.Contains(conn.identity.gameObject))
+        {
+            listPlayers.Remove(conn.identity.gameObject);
+        }
+
         base.OnServerDisconnect(conn);
     }
 
@@ -150,15 +153,11 @@ public class MyNetworkManager : NetworkManager
     // --- CONTROLLO START PARTITA ---
     public void CheckIfAllReady()
     {
-        // Questo controllo deve eseguirlo solo il Server
         if (!NetworkServer.active) return;
-
-        // Se non c'è nessuno, non partiamo
         if (NetworkServer.connections.Count == 0) return;
 
         bool allReady = true;
 
-        // Cicliamo su tutte le identità di rete attive per vedere se sono tutte pronte
         foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values)
         {
             if (conn.identity != null)
@@ -172,7 +171,6 @@ public class MyNetworkManager : NetworkManager
             }
             else
             {
-                // Se un client si sta ancora connettendo e non ha l'identity, aspettiamo
                 allReady = false; 
             }
         }
@@ -181,12 +179,37 @@ public class MyNetworkManager : NetworkManager
         {
             Debug.Log("[SERVER] Tutti i giocatori sono PRONTI! Avvio della partita in corso...");
             
-            // Cambia la scena di rete. Mirror sposterà in parallelo TUTTI i client connessi nella nuova scena
-            
             ServerChangeScene("GameScene");
-			listPlayers.ForEach(player => GameOrchestrator.Instance.AddPlayer(player));
-			GameOrchestrator.Instance.StartGame();
         }
     }
 
+// --- NUOVO: Viene chiamato in automatico da Mirror quando il server ha finito di caricare la nuova scena ---
+    public override void OnServerSceneChanged(string sceneName)
+    {
+        base.OnServerSceneChanged(sceneName);
+
+        if (sceneName == "GameScene")
+        {
+            Debug.Log("[SERVER] GameScene caricata con successo! Inizializzo l'Orchestrator...");
+
+            // ORA la scena è pronta e il GameOrchestrator ha fatto il suo Awake()
+            listPlayers.ForEach(player => 
+            {
+                if (player != null)
+                {
+                    var entity = player.GetComponent<PlayerEntity>();
+                    if (entity != null)
+                    {
+                        GameOrchestrator.Instance.AddPlayer(entity);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[SERVER] Il player {player.name} non ha un componente PlayerEntity!");
+                    }
+                }
+            });
+
+            GameOrchestrator.Instance.StartGame();
+        }
+    }
 }
