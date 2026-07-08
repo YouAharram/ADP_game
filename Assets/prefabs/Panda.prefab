@@ -332,6 +332,9 @@ MonoBehaviour:
   triggerRange: 6
   canAggroPlayers: 1
   triggerDistance: 2
+  recalcDistance: 1.5
+  minRecalcRate: 0.1
+  maxRecalcRate: 2
 --- !u!114 &6741151077945596805
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -347,11 +350,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  maxHealth: 50
-  damage: 10
-  speed: 2
-  hitRange: 1
-  attackPeriodicity: 1.5
 --- !u!114 &327950932173171625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -507,7 +505,7 @@ MonoBehaviour:
   rarityIndex: 5
   baseDamage: 30
   baseHealth: 100
-  baseSpeed: 5
+  baseSpeed: 2
   baseAttackPeriodicity: 1
 --- !u!1 &6544136014927018430
 GameObject:

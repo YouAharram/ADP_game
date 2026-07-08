@@ -22,7 +22,6 @@ public class Projectile : NetworkBehaviour
     [Server]
     public void Shoot(Vector2 arrivo)
     {
-        Debug.Log("Proiettile lanciato");
         puntoArrivo = arrivo;
         inVolo = true;
     }

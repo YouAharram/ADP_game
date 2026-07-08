@@ -30,8 +30,8 @@ public class LevelManager : NetworkBehaviour
         playerHealthIncrement = 0;
         playerDamageIncrement = 0;
         playerSpeedIncrement = 0;
-        
-        totalEnemiesQuantity = CalculateTotalEnemiesQuantity();
+
+        totalEnemiesQuantity = 1; // CalculateTotalEnemiesQuantity();
     }
 
     public void GenerateEnemies(GameOrchestrator gameOrchestrator)

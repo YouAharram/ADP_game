@@ -101,6 +101,7 @@ GameObject:
   - component: {fileID: 8386655548043571562}
   - component: {fileID: -2265482179475826955}
   - component: {fileID: -1126254138716582098}
+  - component: {fileID: 346962536310374689}
   m_Layer: 9
   m_Name: Player2
   m_TagString: Untagged
@@ -469,11 +470,6 @@ MonoBehaviour:
   syncDirection: 1
   syncMode: 0
   syncInterval: 0
-  maxHealth: 20
-  damage: 10
-  speed: 3
-  hitRange: 10
-  attackPeriodicity: 1.5
 --- !u!114 &-2265482179475826955
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -507,3 +503,19 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   projectilePrefab: {fileID: 7056736632115240537, guid: edecc699fae67adafa630aba838007a4, type: 3}
+--- !u!114 &346962536310374689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4411408235715332343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87639d40c71f1269491ed3f2cf13bb50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCameraFollow
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  cameraOffset: {x: 0, y: 5, z: -10}

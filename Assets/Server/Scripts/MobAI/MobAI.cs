@@ -9,7 +9,7 @@ public abstract class MobAI : NetworkBehaviour
     private Detector detector; 
     
     private Vector2 targetPosition;
-
+    
     protected CharacterEntity MobEntity => mobEntity;
     protected Vector2 MyPosition => GetComponent<Rigidbody2D>().position;
     protected Detector Detector => detector;

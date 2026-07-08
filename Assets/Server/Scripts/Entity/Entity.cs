@@ -3,7 +3,7 @@ using Mirror;
 using System;
 public abstract class Entity : NetworkBehaviour
 {
-    private int maxHealth;
+    private int maxHealth = 100;
     
     [SyncVar(hook = nameof(OnHealthChanged))]
     private int currentHealth;

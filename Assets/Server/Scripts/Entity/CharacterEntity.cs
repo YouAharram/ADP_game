@@ -4,9 +4,9 @@ using System;
 
 public abstract class CharacterEntity : Entity
 {
-    private int damage;
+    private int damage = 10;
     private int speed = 5;
-    private float hitRange;
+    private float hitRange = 2;
 
     private float attackPeriodicity = 0.2f;
     private float lastAttackTime = -Mathf.Infinity;

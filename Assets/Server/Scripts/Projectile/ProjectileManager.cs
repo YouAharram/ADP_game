@@ -25,8 +25,6 @@ public class ProjectileManager : NetworkBehaviour
         }
 
         NetworkServer.Spawn(projectileObject);
-        
-        Debug.Log("Manager lancia il proiettile");
         projectile.Shoot(bersaglioPosizione);
     }
 }
