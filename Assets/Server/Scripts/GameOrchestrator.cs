@@ -6,8 +6,6 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
 {
     private static GameOrchestrator instance;
 
-    // Il getter ora è semplicissimo: restituisce solo la variabile.
-    // Se è null, lancia un errore chiaro invece di fare casini.
     public static GameOrchestrator Instance
     {
         get
@@ -34,9 +32,6 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
 
         // Assegnazione ufficiale dell'istanza
         instance = this;
-
-        // Se vuoi che sopravviva ai cambi di scena (opzionale, valuta tu se serve)
-        // DontDestroyOnLoad(gameObject);
     }
     
     private List<PlayerEntity> players = new List<PlayerEntity>();

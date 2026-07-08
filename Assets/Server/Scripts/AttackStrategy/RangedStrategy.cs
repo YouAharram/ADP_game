@@ -30,7 +30,16 @@ public class RangedStrategy : NetworkBehaviour, AttackStrategy
 
         if (projectileManager == null) yield break;
 
-        Vector2 origin = attacker.GetPosition() + fireOrigin;
+        Vector2 origin = new Vector2(0, 0);
+        if (attacker.IsFacingRight)
+        {
+            origin = attacker.GetPosition() + fireOrigin; 
+        }
+        else
+        {
+            origin = attacker.GetPosition() + fireOrigin * new Vector2(-1, 1);
+        }
+        
         projectileManager.ShootProjectile(origin, targetPosition, attacker.Damage);
     }
 }

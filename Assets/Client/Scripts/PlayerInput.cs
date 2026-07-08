@@ -16,6 +16,20 @@ public class PlayerInput : NetworkBehaviour
         mainCam = Camera.main; 
     }
 
+    private Vector2 GetMouseWorldPosition()
+    {
+        Vector2 mouseScreenPosition = Mouse.current.position.ReadValue();
+        Ray ray = mainCam.ScreenPointToRay(mouseScreenPosition);
+
+        Plane gamePlane = new Plane(Vector3.forward, Vector3.zero);
+        if (gamePlane.Raycast(ray, out float distance))
+        {
+            Vector3 worldPoint = ray.GetPoint(distance);
+            return new Vector2(worldPoint.x, worldPoint.y);
+        }
+        return transform.position;
+    }
+
     public void Movements(InputAction.CallbackContext context)
     {
         if (!isLocalPlayer) return;
@@ -37,9 +51,7 @@ public class PlayerInput : NetworkBehaviour
         
         if (context.performed) 
         {
-            Vector2 mouseScreenPosition = Mouse.current.position.ReadValue();
-
-            Vector2 mouseWorldPosition = mainCam.ScreenToWorldPoint(mouseScreenPosition);
+            Vector2 mouseWorldPosition = GetMouseWorldPosition();
 
             CmdAttackAtPosition(mouseWorldPosition);
         }
@@ -47,8 +59,7 @@ public class PlayerInput : NetworkBehaviour
     
     private void HandleFacingDirection()
     {
-        Vector2 mouseScreenPosition = Mouse.current.position.ReadValue();
-        Vector2 mouseWorldPosition = mainCam.ScreenToWorldPoint(mouseScreenPosition);
+        Vector2 mouseWorldPosition = GetMouseWorldPosition();
 
         if (mouseWorldPosition.x > transform.position.x && !isFacingRight)
         {

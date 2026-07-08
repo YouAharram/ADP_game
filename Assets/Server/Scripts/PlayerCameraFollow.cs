@@ -6,10 +6,6 @@ public class PlayerCameraFollow : NetworkBehaviour
     private Transform mainCameraTransform;
     
     [Header("Posizionamento Telecamera")]
-    // Modifica questi tre valori dall'Inspector di Unity per decidere l'inquadratura perfetta
-    // X = Spostamento laterale (di solito 0)
-    // Y = Altezza (es: 5 per guardare dall'alto)
-    // Z = Distanza da dietro (es: -10 per stare arretrati)
     [SerializeField] private Vector3 cameraOffset = new Vector3(0, 5f, -10f); 
 
     public override void OnStartLocalPlayer()
