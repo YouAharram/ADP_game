@@ -62,14 +62,12 @@ public class AggressiveChaserAI : MobAI
         }
     }
 
-    private Vector2 currentPathDestination; // dove puntava l'ULTIMO path calcolato, come nodo finale
+    private Vector2 currentPathDestination; 
 
     private void FollowPath(Vector2 destination)
     {
         bool pathExhausted = currentPath == null || currentPath.Count == 0;
 
-        // Il path esistente è ancora valido se la sua destinazione finale
-        // è ancora abbastanza vicina alla destinazione attuale
         bool pathStillValid = !pathExhausted &&
                               Vector2.Distance(destination, currentPathDestination) < recalcDistance;
 
@@ -86,17 +84,30 @@ public class AggressiveChaserAI : MobAI
         {
             Vector2 direction = (destination - MyPosition).normalized;
             MobEntity.ChangePosition(direction);
+            UpdateFacing(direction);
             return;
         }
 
         Vector2 nextWaypoint = currentPath.Peek();
         Vector2 dirToWaypoint = (nextWaypoint - MyPosition).normalized;
         MobEntity.ChangePosition(dirToWaypoint);
+        UpdateFacing(dirToWaypoint);
 
         float arrivalThreshold = Mathf.Max(0.3f, moveSpeed * Time.deltaTime * 1.5f);
         if (Vector2.Distance(MyPosition, nextWaypoint) < arrivalThreshold)
         {
             currentPath.Dequeue();
+        }
+    }
+    
+    private void UpdateFacing(Vector2 direction)
+    {
+        if (Mathf.Abs(direction.x) < 0.01f) return;
+
+        bool shouldFaceRight = direction.x > 0f;
+        if (MobEntity.IsFacingRight != shouldFaceRight)
+        {
+            MobEntity.IsFacingRight = shouldFaceRight;
         }
     }
 }

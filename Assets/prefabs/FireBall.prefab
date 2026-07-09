@@ -84,7 +84,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingOrder: 20
   m_MaskInteraction: 0
   m_Sprite: {fileID: -358885973555472240, guid: 50911412382772f0d9245faf0645842f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -230,4 +230,3 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 320
   speed: 3
-  arrivalThreshold: 0.2

@@ -10,12 +10,19 @@ public class AnimationObserver : MonoBehaviour
     private SpriteRenderer sr;
 
     private Vector2 lastPosition;
+    private Color originalColor;
+    private Coroutine flashRoutine;
 
     void Start()
     {
         animator = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
         characterEntity = GetComponent<CharacterEntity>();
+
+        if (sr != null)
+        {
+            originalColor = sr.color;
+        }
 
         if (characterEntity != null)
         {
@@ -33,12 +40,9 @@ public class AnimationObserver : MonoBehaviour
 
     private void Update()
     {
-        // Se non è ancora passato abbastanza tempo, salta l'Update
         if (Time.time < nextCheckTime) return;
 
-        // Aggiorna il timer per il prossimo controllo
         nextCheckTime = Time.time + checkInterval;
-        // Lettura locale di uno stato già sincronizzato da NetworkTransform
         UpdateMovementAnimation();
     }
 
@@ -77,7 +81,11 @@ public class AnimationObserver : MonoBehaviour
     {
         if (sr != null)
         {
-            StartCoroutine(FlashRedEffect());
+            if (flashRoutine != null)
+            {
+                StopCoroutine(flashRoutine);
+            }
+            flashRoutine = StartCoroutine(FlashRedEffect());
         }
     }
 
@@ -99,13 +107,13 @@ public class AnimationObserver : MonoBehaviour
 
     private IEnumerator FlashRedEffect()
     {
-        Color originalColor = sr.color;
         sr.color = Color.red;
         yield return new WaitForSeconds(0.15f);
         if (sr != null)
         {
             sr.color = originalColor;
         }
+        flashRoutine = null;
     }
 
     void OnDestroy()
