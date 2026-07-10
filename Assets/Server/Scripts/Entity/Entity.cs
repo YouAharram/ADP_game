@@ -1,9 +1,11 @@
 using UnityEngine;
 using Mirror;
 using System;
+
 public abstract class Entity : NetworkBehaviour
 {
-    private int maxHealth = 100;
+    [SyncVar(hook = nameof(OnMaxHealthChanged))] 
+    private int maxHealth;
     
     [SyncVar(hook = nameof(OnHealthChanged))]
     private int currentHealth;
@@ -20,15 +22,13 @@ public abstract class Entity : NetworkBehaviour
     public event Action<Entity> OnDieServer;
     
     public Rigidbody2D Rb { get => rb; set => rb = value; }
+    
     public int MaxHealth 
     { 
         get => maxHealth; 
-        set 
-        {
-            maxHealth = value; 
-            currentHealth = maxHealth;       
-        }
+        [Server] set { maxHealth = value; currentHealth = maxHealth; }
     }
+    
     public int CurrentHealth => currentHealth;
     public bool IsDead => isDead;
     
@@ -46,6 +46,17 @@ public abstract class Entity : NetworkBehaviour
         isDead = false;
     }
     
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+
+        Debug.Log($"[Entity] OnStartClient su '{name}' -> hp={currentHealth}/{maxHealth}, isDead={isDead}");
+
+        // Forza l'aggiornamento grafico appena il client riceve l'oggetto
+        OnDamageClient?.Invoke();
+        if (isDead) OnDieClient?.Invoke();
+    }
+    
     [Server]
     public void TakeDamage(int amount)
     {
@@ -56,30 +67,29 @@ public abstract class Entity : NetworkBehaviour
         if (currentHealth <= 0)
         {
             currentHealth = 0;
-            isDead = true; // scatena OnDeadChanged su tutti i client via hook
+            isDead = true;
             OnDieServer?.Invoke(this);
         }
     }
     
-    // Hook SyncVar: gira automaticamente su ogni client quando
-    // currentHealth cambia. Nessun RPC manuale necessario.
     private void OnHealthChanged(int oldHealth, int newHealth)
     {
+        Debug.Log($"[Entity] OnHealthChanged su '{name}': {oldHealth} -> {newHealth}");
         OnDamageClient?.Invoke();
         OnDamageServer?.Invoke(this);
     }
     
-    // Hook SyncVar: gestisce la morte in modo persistente,
-    // corretto anche per chi si connette dopo che il personaggio
-    // è già morto (isDead sarà già true al momento dello spawn).
+    private void OnMaxHealthChanged(int oldVal, int newVal)
+    {
+        Debug.Log($"[Entity] OnMaxHealthChanged su '{name}': {oldVal} -> {newVal}");
+        // Se cambia la vita massima, la barra deve ricalcolarsi
+        OnDamageClient?.Invoke();
+    }
+    
     private void OnDeadChanged(bool oldValue, bool newValue)
     {
-        if (newValue)
-        {
-            OnDieClient?.Invoke();
-        }
+        if (newValue) OnDieClient?.Invoke();
     }
     
     public abstract void Accept(CharacterVisitor characterVisitor);
-
 }

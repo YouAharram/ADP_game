@@ -1,16 +1,3 @@
-// ============================================================
-// MODIFICHE:
-// 1. Sottoscrizione a OnDamageClient (rinominato) invece di
-//    OnDamage: nessun'altra modifica strutturale necessaria,
-//    questa classe era già corretta nell'approccio (SyncVar
-//    hook), solo allineata al nuovo naming.
-// 2. Aggiunta sottoscrizione a OnDieClient per gestire lo stato
-//    "morto" nella barra vita (es. nasconderla o forzarla a 0),
-//    così è consistente anche se muori per un motivo diverso da
-//    un singolo danno (es. debug/comando GM).
-// 3. Rimosso il riferimento diretto a Mirror (using Mirror non
-//    serviva più: la classe non tocca la rete, giustamente).
-// ============================================================
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,40 +5,99 @@ public class HealthBar : MonoBehaviour
 {
     [SerializeField] private Image fillImage;
     [SerializeField] private Gradient colorGradient;
+    
+    [Tooltip("Trascina qui l'Entity se vuoi forzare il collegamento, altrimenti lo cerca da solo")]
+    [SerializeField] private Entity targetEntity;
 
-    private CharacterEntity characterEntity;
+    private bool subscribed;
 
     void Start()
     {
-        characterEntity = GetComponentInParent<CharacterEntity>();
-
-        if (characterEntity != null)
+        // Ricerca automatica solo se non è già stato assegnato via Init() o Inspector
+        if (targetEntity == null)
         {
-            characterEntity.OnDamageClient += UpdateHealthBar;
-            characterEntity.OnDieClient += HandleDeath;
-
-            UpdateHealthBar();
+            targetEntity = GetComponentInParent<Entity>();
         }
+
+        if (fillImage == null)
+        {
+            Debug.LogError($"[HealthBar] ERRORE: 'fillImage' NON è collegata nell'Inspector di {gameObject.name}!");
+        }
+
+        if (targetEntity == null)
+        {
+            Debug.LogError($"[HealthBar] ERRORE: targetEntity NULL su '{gameObject.name}'. " +
+                            $"Parent: {(transform.parent != null ? transform.parent.name : "nessuno")}. " +
+                            $"Se questa HealthBar viene istanziata dinamicamente (es. nameplate), " +
+                            $"chiama HealthBar.Init(entity) subito dopo Instantiate invece di affidarti a Start().");
+            return;
+        }
+
+        Subscribe();
+        UpdateHealthBar();
+    }
+
+    /// <summary>
+    /// Da chiamare esplicitamente quando la HealthBar viene istanziata dinamicamente
+    /// (es. spawnata come nameplate DOPO che l'Entity esiste già), invece di
+    /// affidarsi a GetComponentInParent in Start().
+    /// </summary>
+    public void Init(Entity entity)
+    {
+        if (entity == null)
+        {
+            Debug.LogError($"[HealthBar] Init chiamato con entity NULL su '{gameObject.name}'!");
+            return;
+        }
+
+        Unsubscribe();
+        targetEntity = entity;
+        Subscribe();
+        UpdateHealthBar();
+    }
+
+    private void Subscribe()
+    {
+        if (targetEntity == null || subscribed) return;
+        targetEntity.OnDamageClient += UpdateHealthBar;
+        subscribed = true;
+    }
+
+    private void Unsubscribe()
+    {
+        if (targetEntity == null || !subscribed) return;
+        targetEntity.OnDamageClient -= UpdateHealthBar;
+        subscribed = false;
     }
 
     void OnDestroy()
     {
-        if (characterEntity != null)
-        {
-            characterEntity.OnDamageClient -= UpdateHealthBar;
-            characterEntity.OnDieClient -= HandleDeath;
-        }
+        Unsubscribe();
     }
 
     public void UpdateHealthBar()
     {
-        float fillValue = (float)characterEntity.CurrentHealth / characterEntity.MaxHealth;
-        fillImage.fillAmount = fillValue;
-        fillImage.color = colorGradient.Evaluate(fillValue);
-    }
+        if (targetEntity == null)
+        {
+            Debug.LogWarning($"[HealthBar] UpdateHealthBar chiamato ma targetEntity è NULL su '{gameObject.name}'.");
+            return;
+        }
 
-    private void HandleDeath()
-    {
-        fillImage.fillAmount = 0f;
+        // Se MaxHealth è 0, siamo in una fase di transizione di rete. Non calcoliamo nulla.
+        if (targetEntity.MaxHealth <= 0)
+        {
+            if (fillImage != null) fillImage.fillAmount = 0;
+            return;
+        }
+
+        float fillValue = (float)targetEntity.CurrentHealth / targetEntity.MaxHealth;
+
+        Debug.Log($"[HealthBar] '{targetEntity.name}': hp={targetEntity.CurrentHealth}/{targetEntity.MaxHealth} -> fill={fillValue}");
+
+        if (fillImage != null)
+        {
+            fillImage.fillAmount = fillValue;
+            if (colorGradient != null) fillImage.color = colorGradient.Evaluate(fillValue);
+        }
     }
 }

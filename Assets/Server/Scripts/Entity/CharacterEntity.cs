@@ -4,8 +4,8 @@ using System;
 
 public abstract class CharacterEntity : Entity
 {
-    private int damage = 10;
-    private int speed = 5;
+    private int damage;
+    private int speed;
     private float hitRange = 2;
 
     [SerializeField] private float attackPeriodicity = 0.2f;
@@ -64,7 +64,6 @@ public abstract class CharacterEntity : Entity
         // Il movimento visivo (flip, blend animazione) NON passa più
         // da qui: NetworkTransform sincronizza rb.position, e l'
         // AnimationObserver lo legge in Update() lato client.
-        
         
         Rb.linearVelocity = (isSprinting ? 2 : 1) * direction.normalized * speed ;
     }

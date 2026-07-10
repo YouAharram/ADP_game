@@ -3093,7 +3093,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1718143503}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03eea64c6ff486cdd8c83e8d280aae39, type: 3}
+  m_Script: {fileID: 11500000, guid: cd3b7c070c694f6ab8ddde6c0c450942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MyNetworkManager
   dontDestroyOnLoad: 1
@@ -3104,8 +3104,8 @@ MonoBehaviour:
   offlineScene: 
   onlineScene: 
   offlineSceneLoadDelay: 0
-  transport: {fileID: 1718143508}
-  networkAddress: 127.0.0.1
+  transport: {fileID: 0}
+  networkAddress: localhost
   maxConnections: 100
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
@@ -3114,13 +3114,14 @@ MonoBehaviour:
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs:
-  - {fileID: 3089745289882174588, guid: 4e21a092b9fa9344e9947fdbb10b3f5f, type: 3}
-  - {fileID: 3089745289882174588, guid: 78d5a44ec8a9a1e0b8b1a6403a6707aa, type: 3}
   - {fileID: 7056736632115240537, guid: edecc699fae67adafa630aba838007a4, type: 3}
+  - {fileID: 3089745289882174588, guid: 78d5a44ec8a9a1e0b8b1a6403a6707aa, type: 3}
   - {fileID: 7056736632115240537, guid: bff69c8f7cc65f972bff5c7162fad9f5, type: 3}
   - {fileID: 4699449289732389676, guid: f39321df085b61e9c91cb030dd051b30, type: 3}
   - {fileID: 7123488711396460608, guid: e99d824d4fcfff2879c04b8742350866, type: 3}
   - {fileID: 4411408235715332343, guid: 63073ed1f49c426cab3632b7d5dfcc88, type: 3}
+  - {fileID: 4411408235715332343, guid: b4afeafbe3a230660a5b031dfdc688f7, type: 3}
+  - {fileID: 3089745289882174588, guid: 4e21a092b9fa9344e9947fdbb10b3f5f, type: 3}
   - {fileID: 4699449289732389676, guid: b57be929b6ab06d8d90eb6bfa9cbcd90, type: 3}
   - {fileID: 4699449289732389676, guid: 321c668ea2d08e9fea3e9127697d8ac2, type: 3}
   - {fileID: 8529301805953909890, guid: 57cdbce7bad76d1f2b31a6a93f678006, type: 3}

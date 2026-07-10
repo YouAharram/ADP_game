@@ -30,7 +30,6 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
             return;
         }
 
-        // Assegnazione ufficiale dell'istanza
         instance = this;
     }
     
@@ -40,36 +39,53 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
     [SerializeField] private GameObject castle;
     [SerializeField] private List<GameObject> enemyPrefabs;
     [SerializeField] private Rect mapBounds;
+    
     private LevelManager levelManager;
-
     private PlayerBaseStats playerBaseStats;
+    
     private int aliveEnemies = 0;
     private int alivePlayers = 0;
     
-    public Rect MapBounds { get => mapBounds;}
-    public List<GameObject> EnemyPrefabs { get => enemyPrefabs;}
+    public Rect MapBounds { get => mapBounds; }
+    public List<GameObject> EnemyPrefabs { get => enemyPrefabs; }
 
-    public void StartGame()
+    public void InitializeOrchestrator()
     {        
-        Debug.Log("GameOrchestrator: Avvio la partita!");
+        Debug.Log("GameOrchestrator: Inizializzazione manager e statistiche...");
         levelManager = GetComponent<LevelManager>();
         levelManager.EnemyExtractor = new EnemyPrefabExpRarityExtractor();
         playerBaseStats = GetComponent<PlayerBaseStats>();
-        StartLevel();
+        
+        // Pulizia liste per sicurezza
+        players.Clear();
+        enemies.Clear();
+        aliveEnemies = 0;
+        alivePlayers = 0;
     }
 
     private void StartLevel()
     {
-        players.ForEach(player => levelManager.SetPlayerStatistics(player, playerBaseStats));
+        Debug.Log($"[GameOrchestrator] Inizio Livello {levelManager.Level}. Generazione nemici...");
         levelManager.GenerateEnemies(this);
     }
- 
  
     public void AddPlayer(PlayerEntity playerStats)
     {
         players.Add(playerStats);
         playerStats.OnDieServer += RemoveCharacter;
         alivePlayers++;
+
+        if (levelManager != null && playerBaseStats != null)
+        {
+            levelManager.SetPlayerStatistics(playerStats, playerBaseStats);
+            Debug.Log($"[GameOrchestrator] Statistiche applicate a {playerStats.name}");
+        }
+        
+        if (players.Count == NetworkServer.connections.Count)
+        {
+            Debug.Log("[GameOrchestrator] Tutti i giocatori sono spawnati. Inizio la partita!");
+            StartLevel();
+        }
     }
 
     private void AddEnemy(EnemyMobEntity enemyMobStats)
@@ -78,7 +94,6 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
         enemyMobStats.OnDieServer += RemoveCharacter;
         aliveEnemies++;
     }
-
 
     private void RemoveCharacter(Entity characterStats)
     {
@@ -90,7 +105,8 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
     {
         players.Remove(playerStats);
         alivePlayers--;
-        if (alivePlayers == 0)
+        
+        if (alivePlayers <= 0)
             GameOver();
     }
 
@@ -98,13 +114,15 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
     {
         enemies.Remove(enemyMobStats);
         aliveEnemies--;
-        if (aliveEnemies == 0)
+        
+        if (aliveEnemies <= 0)
             Win();
     }
 
     public void VisitBuilding(BuildingEntity allyMobEntity)
     {
-        throw new System.NotImplementedException();
+        // Se il castello viene distrutto, si perde la partita!
+        GameOver(); 
     }
     
     public void GenerateEnemy(GameObject enemyPrefab)
@@ -114,7 +132,10 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
             EnemyPositionSelector.RandomPosition(mapBounds), 
             Quaternion.identity);
         
+        // Impostiamo l'intelligenza artificiale verso il castello
         enemy.GetComponent<MobAI>().TargetPosition = castle.GetComponent<Entity>().GetPosition();
+        
+        // Impostiamo le statistiche base
         EnemyMobEntity enemyStats = enemy.GetComponent<EnemyMobEntity>();
         levelManager.SetEnemyStatistics(enemyStats, enemy.GetComponent<EnemyPrefabBaseStats>());
             
@@ -122,21 +143,21 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
         AddEnemy(enemyStats);
     }
 
-
     private void GameOver()
     {
-        Debug.Log("Partita persa, tutti i player sono stati eliminati.");
+        Debug.Log("Partita persa. Disconnessione generale in corso.");
         NetworkServer.DisconnectAll();
     }
 
     private void Win()
     {
-        Debug.Log("Livello" + levelManager.Level + " vinto! Tutti i nemici sono stati eliminati. Passaggio al livello successivo...");
+        Debug.Log($"Livello {levelManager.Level} vinto! Tutti i nemici sono stati eliminati. Passaggio al livello successivo...");
         
         levelManager.LevelUp();
+        
+        // Riapplichiamo le stat per eventuali Level Up del giocatore
+        players.ForEach(player => levelManager.SetPlayerStatistics(player, playerBaseStats));
+        
         StartLevel();
     }
-
-
 }
- 

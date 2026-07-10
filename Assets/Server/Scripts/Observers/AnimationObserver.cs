@@ -30,7 +30,6 @@ public class AnimationObserver : MonoBehaviour
 
             characterEntity.OnAttackingClient += AnimationAttack;
             characterEntity.OnDamageClient += AnimationDamage;
-            characterEntity.OnDieClient += AnimationDeath;
             characterEntity.OnFlipDirectionClient += FlipDirection;
         }
     }
@@ -89,22 +88,6 @@ public class AnimationObserver : MonoBehaviour
         }
     }
 
-    private void AnimationDeath()
-    {
-        if (deathVFXPrefab != null)
-        {
-            Instantiate(deathVFXPrefab, transform.position, Quaternion.identity);
-        }
-        else
-        {
-            Debug.Log("deathVFXPrefab è null porca pera!");
-        }
-        if (animator != null)
-        {
-            animator.SetTrigger("Die");
-        }
-    }
-
     private IEnumerator FlashRedEffect()
     {
         sr.color = Color.red;
@@ -122,7 +105,6 @@ public class AnimationObserver : MonoBehaviour
         {
             characterEntity.OnAttackingClient -= AnimationAttack;
             characterEntity.OnDamageClient -= AnimationDamage;
-            characterEntity.OnDieClient -= AnimationDeath;
             characterEntity.OnFlipDirectionClient -= FlipDirection;
         }
     }
