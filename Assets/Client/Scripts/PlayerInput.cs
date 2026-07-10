@@ -7,6 +7,7 @@ public class PlayerInput : NetworkBehaviour
     private CharacterController playerController;
     private Vector2 currentInput; 
     private bool isFacingRight = true;
+    private bool isSprinting = false;
     
     private Camera mainCam;
 
@@ -36,23 +37,29 @@ public class PlayerInput : NetworkBehaviour
         currentInput = context.ReadValue<Vector2>();
     }
 
+    public void Sprint(InputAction.CallbackContext context)
+    {
+        if (!isLocalPlayer) return;
+        
+        isSprinting = context.ReadValueAsButton();
+    }
+
     void Update()
     {
         if (!isLocalPlayer) return;
 
-        CmdMovements(currentInput);
+        CmdMovements(currentInput, isSprinting);
 
         HandleFacingDirection();
     }
 
     public void Attack(InputAction.CallbackContext context)
     {
-        if (!isLocalPlayer) return;
+        if (!isLocalPlayer || isSprinting) return;
         
         if (context.performed) 
         {
             Vector2 mouseWorldPosition = GetMouseWorldPosition();
-
             CmdAttackAtPosition(mouseWorldPosition);
         }
     }
@@ -80,15 +87,14 @@ public class PlayerInput : NetworkBehaviour
     }
 
     [Command]
-    private void CmdMovements(Vector2 direction)
+    private void CmdMovements(Vector2 direction, bool sprint)
     {
-        playerController.Move(direction);
+        playerController.Move(direction, sprint);
     }
     
     [Command]
     private void CmdChangeFacingDirection(bool facingRight)
     {
-        Debug.Log("Chiamo SetFacing del controller");
         playerController.SetFacing(facingRight);
     }
 }

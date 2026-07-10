@@ -229,9 +229,6 @@ MonoBehaviour:
   triggerRange: 0
   canAggroPlayers: 0
   triggerDistance: 5
-  recalcDistance: 1.5
-  minRecalcRate: 0.1
-  maxRecalcRate: 2
 --- !u!114 &4556192892308245881
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -260,6 +257,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  attackPeriodicity: 0.2
 --- !u!114 &431240388437003674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,7 +336,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2

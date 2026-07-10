@@ -18,9 +18,9 @@ public class CharacterController : NetworkBehaviour
     }
 
     [ServerCallback]
-    public void Move(Vector2 direction)
+    public void Move(Vector2 direction, bool isSprinting = false)
     {
-        playerEntity.ChangePosition(direction);
+        playerEntity.ChangePosition(direction, isSprinting);
     }
     
     [ServerCallback]

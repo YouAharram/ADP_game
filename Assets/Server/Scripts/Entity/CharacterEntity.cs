@@ -8,7 +8,7 @@ public abstract class CharacterEntity : Entity
     private int speed = 5;
     private float hitRange = 2;
 
-    private float attackPeriodicity = 0.2f;
+    [SerializeField] private float attackPeriodicity = 0.2f;
     private float lastAttackTime = -Mathf.Infinity;
     
     private bool isFacingRight = true;
@@ -59,12 +59,14 @@ public abstract class CharacterEntity : Entity
         attackStrategy = GetComponent<AttackStrategy>();
     }
 
-    public void ChangePosition(Vector2 direction)
+    public void ChangePosition(Vector2 direction, bool isSprinting = false)
     {
         // Il movimento visivo (flip, blend animazione) NON passa più
         // da qui: NetworkTransform sincronizza rb.position, e l'
         // AnimationObserver lo legge in Update() lato client.
-        Rb.linearVelocity = direction.normalized * speed;
+        
+        
+        Rb.linearVelocity = (isSprinting ? 2 : 1) * direction.normalized * speed ;
     }
 
     public void AttackCharacter(TargetInfo targetInfo)
