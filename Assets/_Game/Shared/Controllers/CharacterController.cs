@@ -27,6 +27,6 @@ public class CharacterController : NetworkBehaviour
     public void SetFacing(bool isFacingRight)
     {
         Debug.Log("Chiamo  SetFacing del playerEntity");
-        playerEntity.IsFacingRight = isFacingRight;
+        playerEntity.SetFacingDirection(isFacingRight);
     }
 }

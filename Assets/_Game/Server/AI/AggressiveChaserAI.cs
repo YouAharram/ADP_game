@@ -55,7 +55,7 @@ public class AggressiveChaserAI : MobAI
         bool shouldFaceRight = direction.x > 0f;
         if (MobEntity.IsFacingRight != shouldFaceRight)
         {
-            MobEntity.IsFacingRight = shouldFaceRight;
+            MobEntity.SetFacingDirection(shouldFaceRight);
         }
     }
 }

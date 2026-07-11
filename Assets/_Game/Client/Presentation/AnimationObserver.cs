@@ -14,25 +14,29 @@ public class AnimationObserver : MonoBehaviour
     private Coroutine flashRoutine;
 
     void Start()
+{
+    animator = GetComponent<Animator>();
+    sr = GetComponent<SpriteRenderer>();
+    characterEntity = GetComponent<CharacterEntity>();
+
+    if (sr != null)
     {
-        animator = GetComponent<Animator>();
-        sr = GetComponent<SpriteRenderer>();
-        characterEntity = GetComponent<CharacterEntity>();
-
-        if (sr != null)
-        {
-            originalColor = sr.color;
-        }
-
-        if (characterEntity != null)
-        {
-            lastPosition = characterEntity.GetPosition();
-
-            characterEntity.OnAttackingClient += AnimationAttack;
-            characterEntity.OnDamageClient += AnimationDamage;
-            characterEntity.OnFlipDirectionClient += FlipDirection;
-        }
+        originalColor = sr.color;
     }
+
+    if (characterEntity != null)
+    {
+        lastPosition = characterEntity.GetPosition();
+
+        // Sync iniziale esplicito: allinea subito lo sprite allo stato logico corrente,
+        // senza aspettare un cambiamento futuro che potrebbe non arrivare mai.
+        FlipToRight(characterEntity.IsFacingRight);
+
+        characterEntity.OnAttackingClient += AnimationAttack;
+        characterEntity.OnDamageClient += AnimationDamage;
+        characterEntity.OnFlipToRightClient += FlipToRight;
+    }
+}
 
     private float checkInterval = 0.1f; // Controlla 10 volte al secondo
     private float nextCheckTime = 0f;
@@ -62,10 +66,10 @@ public class AnimationObserver : MonoBehaviour
         lastPosition = currentPosition;
     }
 
-    private void FlipDirection()
+    private void FlipToRight(bool isFacingRight)
     {
-        Debug.Log("FlipDirection chiamato in AnimationObserver");
-        sr.flipX = !sr.flipX;
+        Debug.Log("FlipToRight chiamato in AnimationObserver");
+        sr.flipX = !isFacingRight;
     }
 
     private void AnimationAttack()
@@ -105,7 +109,7 @@ public class AnimationObserver : MonoBehaviour
         {
             characterEntity.OnAttackingClient -= AnimationAttack;
             characterEntity.OnDamageClient -= AnimationDamage;
-            characterEntity.OnFlipDirectionClient -= FlipDirection;
+            characterEntity.OnFlipToRightClient -= FlipToRight;
         }
     }
 }

@@ -11,12 +11,12 @@ public abstract class CharacterEntity : Entity
     [SerializeField] private float attackPeriodicity = 0.2f;
     private float lastAttackTime = -Mathf.Infinity;
     
-    private bool isFacingRight = true;
+    [SyncVar] private bool isFacingRight;
     
     private AttackStrategy attackStrategy;
 
     public event Action OnAttackingClient;
-    public event Action OnFlipDirectionClient;
+    public event Action<bool> OnFlipToRightClient;
 
     public int Damage
     {
@@ -42,31 +42,34 @@ public abstract class CharacterEntity : Entity
         set => hitRange = value;
     }
 
-    public bool IsFacingRight
-    {
-        get => isFacingRight;
-        [Server]
-        set
-        {
-            Debug.Log("SetIsFacing chiamato");
-            isFacingRight = value;
-            RpcNotifyFlipDirection();
-        }
-    }
+    public bool IsFacingRight => isFacingRight;
 
     protected override void Awake()
     {
         base.Awake();
         attackStrategy = GetComponent<AttackStrategy>();
+        isFacingRight = transform.localScale.x > 0;
+    }
+
+    [Server]
+    public void SetFacingDirection(bool faceRight)
+    {
+        if (isFacingRight == faceRight) return;
+
+        Debug.Log($"[{name}] SetFacingDirection chiamato: {faceRight}");
+        isFacingRight = faceRight;
+        
+        RpcNotifyFlipToRight(faceRight); 
+    }
+
+    private void Update()
+    {
+        Debug.Log("[" + name +"] IsFacingRight: " + isFacingRight);
     }
 
     [Server]
     public void ChangePosition(Vector2 direction, bool isSprinting = false)
     {
-        // Il movimento visivo (flip, blend animazione) NON passa più
-        // da qui: NetworkTransform sincronizza rb.position, e l'
-        // AnimationObserver lo legge in Update() lato client.
-        
         Rb.linearVelocity = (isSprinting ? 2 : 1) * direction.normalized * speed ;
     }
 
@@ -97,9 +100,10 @@ public abstract class CharacterEntity : Entity
     }
     
     [ClientRpc]
-    private void RpcNotifyFlipDirection()
+    private void RpcNotifyFlipToRight(bool faceRight)
     {
-        Debug.Log("Chiamo evento");
-        OnFlipDirectionClient?.Invoke();
+        isFacingRight = faceRight; 
+        
+        OnFlipToRightClient?.Invoke(faceRight); 
     }
 }

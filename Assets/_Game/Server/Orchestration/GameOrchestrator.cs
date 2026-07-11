@@ -134,6 +134,8 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
     
     public void GenerateEnemy(GameObject enemyPrefab)
     {
+		enemyPrefab.GetComponent<EnemyMobEntity>().SetFacingDirection(false); 	
+
         GameObject enemy = Instantiate(
             enemyPrefab, 
             EnemyPositionSelector.RandomPosition(mapBounds), 
@@ -144,6 +146,7 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
         
         // Impostiamo le statistiche base
         EnemyMobEntity enemyStats = enemy.GetComponent<EnemyMobEntity>();
+
         levelManager.SetEnemyStatistics(enemyStats, enemy.GetComponent<EnemyPrefabBaseStats>());
             
         NetworkServer.Spawn(enemy);
