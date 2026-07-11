@@ -191,7 +191,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -16.61443, y: 11.18895, z: 0}
-  m_LocalScale: {x: -1, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1081909173076340354}
@@ -332,9 +332,6 @@ MonoBehaviour:
   triggerRange: 6
   canAggroPlayers: 1
   triggerDistance: 2
-  recalcDistance: 1.5
-  minRecalcRate: 0.1
-  maxRecalcRate: 2
 --- !u!114 &6741151077945596805
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -350,6 +347,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  attackPeriodicity: 0.2
 --- !u!114 &327950932173171625
 MonoBehaviour:
   m_ObjectHideFlags: 0

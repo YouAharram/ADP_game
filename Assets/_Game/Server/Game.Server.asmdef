@@ -1,0 +1,17 @@
+{
+    "name": "Game.Server",
+    "rootNamespace": "",
+    "references": [
+        "Mirror",
+        "Game.Gameplay"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
