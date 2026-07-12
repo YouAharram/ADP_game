@@ -61,6 +61,10 @@ public class GameOrchestrator : NetworkBehaviour, CharacterVisitor
         enemies.Clear();
         aliveEnemies = 0;
         alivePlayers = 0;
+        
+        // TODO: migliorare questa parte con BIO
+        BuildingEntity castleEntity = castle.GetComponent<BuildingEntity>();
+        castleEntity.MaxHealth = 10000;
     }
 
     private void StartLevel()

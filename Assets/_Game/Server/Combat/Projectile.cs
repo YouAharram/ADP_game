@@ -1,22 +1,25 @@
 using Mirror;
 using UnityEngine;
+using System.Linq;
 
 public class Projectile : NetworkBehaviour
 {
     private Vector2 puntoArrivo;
     private bool inVolo = false;
     private Rigidbody2D rb;
-    private bool despawned = false; // guard anti doppia Destroy
+    private bool despawned = false; 
 
-    [SerializeField] private float knockbackForce;
-    [SerializeField] private float knockbackTime;
-    [SerializeField] private float stunTime;
-
+    private float knockbackForce = 3f;
+    private float knockbackTime = 0.3f;
+    private float stunTime = 0.2f;
 
     [SerializeField] private LayerMask targetLayer;
     [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private float speed;
 
+    [SerializeField] private SpriteRenderer sr;
+    [SerializeField] private Sprite buriedSprite;
+    
     private int damage;
     public int Damage { get => damage; set => damage = value; }
 
@@ -56,7 +59,6 @@ public class Projectile : NetworkBehaviour
     {
         if (!inVolo) return;
 
-        // Colpisce un bersaglio
         if (((1 << other.gameObject.layer) & targetLayer) != 0)
         {
             CharacterEntity target = other.GetComponentInParent<CharacterEntity>();
@@ -64,17 +66,98 @@ public class Projectile : NetworkBehaviour
             if (target != null)
             {
                 target.TakeDamage(damage);
-                
-                // KNOCKBACK
+
                 Vector2 direzioneVolo = (puntoArrivo - rb.position).normalized;
                 target.Knockback(direzioneVolo, knockbackForce, knockbackTime, stunTime);
 
                 inVolo = false;
-                DespawnProjectile();
+
+                NetworkIdentity targetIdentity = target.GetComponent<NetworkIdentity>();
+            
+                // Posizione esatta d'impatto rilevata dal server
+                Vector2 hitPosition = rb.position;
+            
+                // Offset rispetto al target, cosi la freccia segue il nemico se si muove
+                Vector2 localOffset = hitPosition - (Vector2)target.transform.position;
+
+                RpcAttachToEnemy(targetIdentity, localOffset);
+
+                Invoke(nameof(DespawnProjectile), 3f);
             }
 
             return;
         }
+
+        // Colpisce un ostacolo
+        else if (((1 << other.gameObject.layer) & obstacleLayer) != 0)
+        {
+            inVolo = false;
+            RpcAttachToObstacle();
+            Invoke(nameof(DespawnProjectile), 3f);
+        }
+    }
+    
+    [ClientRpc]
+    private void RpcAttachToEnemy(NetworkIdentity targetIdentity, Vector2 localOffset)
+    {
+        inVolo = false;
+
+        DisableNetworkTransform();
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.simulated = false;
+        }
+
+        if (targetIdentity != null)
+        {
+            transform.SetParent(targetIdentity.transform);
+            // Forziamo la posizione ESATTA rilevata dal server, ignorando dove si trovava
+            // la freccia sul client a causa della latenza
+            transform.localPosition = localOffset;
+        }
+
+        if (sr != null && buriedSprite != null)
+        {
+            sr.sprite = buriedSprite;
+        }
+
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null) col.enabled = false;
+    }
+
+    private void DisableNetworkTransform()
+    {
+        // troiaio per far funzionare
+        var behaviours = GetComponents<Behaviour>();
+        foreach (var b in behaviours)
+        {
+            if (b.GetType().Name.Contains("NetworkTransform"))
+            {
+                b.enabled = false;
+            }
+        }
+    }
+
+    [ClientRpc]
+    private void RpcAttachToObstacle()
+    {
+        inVolo = false;
+        
+        if (sr != null && buriedSprite != null)
+        {
+            sr.sprite = buriedSprite;
+        }
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.bodyType = RigidbodyType2D.Kinematic;
+        }
+
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null) col.enabled = false;
     }
 
     [Server]

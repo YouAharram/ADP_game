@@ -84,7 +84,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 20
+  m_SortingOrder: 10
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: c272e6d3dde6e4ad58af98df64cbaf46, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -236,9 +236,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  knockbackForce: 3
-  knockbackTime: 0.2
-  stunTime: 0.1
   targetLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -246,3 +243,5 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2048
   speed: 10
+  sr: {fileID: 7846381100341947418}
+  buriedSprite: {fileID: 2280123010808302456, guid: 8d805c526c70c00918c9e738343dc3ae, type: 3}

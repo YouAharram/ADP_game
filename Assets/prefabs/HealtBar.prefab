@@ -62,7 +62,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 10
+  m_SortingOrder: 20
   m_TargetDisplay: 0
 --- !u!114 &1666730912932526337
 MonoBehaviour:
@@ -99,9 +99,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93b90dcebc1445a89923a3eeefcea364, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthBar
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   fillImage: {fileID: 1948753845209553080}
   colorGradient:
     serializedVersion: 2

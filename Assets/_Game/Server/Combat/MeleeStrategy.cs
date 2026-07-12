@@ -5,9 +5,9 @@ using System;
 public class MeleeStrategy : NetworkBehaviour, AttackStrategy
 {
     private Rigidbody2D rb;
-    [SerializeField] private float knockbackForce;
-    [SerializeField] private float knockbackTime;
-    [SerializeField] private float stunTime;
+    private float knockbackForce = 3f;
+    private float knockbackTime = 0.3f;
+    private float stunTime = 0.2f;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
