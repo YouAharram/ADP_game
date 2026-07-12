@@ -20,6 +20,8 @@ public class Projectile : NetworkBehaviour
     [SerializeField] private SpriteRenderer sr;
     [SerializeField] private Sprite buriedSprite;
     
+    [SerializeField] private Sprite buriedDownSprite;
+    
     private int damage;
     public int Damage { get => damage; set => damage = value; }
 
@@ -50,7 +52,7 @@ public class Projectile : NetworkBehaviour
         if (arrivato)
         {
             inVolo = false;
-            DespawnProjectile();
+            RpcAttachDown();
         }
     }
 
@@ -84,7 +86,7 @@ public class Projectile : NetworkBehaviour
 
                 Invoke(nameof(DespawnProjectile), 3f);
             }
-
+            
             return;
         }
 
@@ -138,6 +140,28 @@ public class Projectile : NetworkBehaviour
                 b.enabled = false;
             }
         }
+    }
+    
+    
+
+    [ClientRpc]
+    private void RpcAttachDown()
+    {
+        inVolo = false;
+        
+        if (sr != null && buriedDownSprite != null)
+        {
+            sr.sprite = buriedDownSprite;
+        }
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.bodyType = RigidbodyType2D.Kinematic;
+        }
+
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null) col.enabled = false;
     }
 
     [ClientRpc]
