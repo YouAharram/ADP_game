@@ -1,12 +1,14 @@
 using UnityEngine;
 using Mirror;
 using System;
+using System.Collections;
 
 public abstract class CharacterEntity : Entity
 {
     private int damage;
     private int speed;
     private float hitRange = 2;
+    private bool isStunned = false;
 
     [SerializeField] private float attackPeriodicity = 0.2f;
     private float lastAttackTime = -Mathf.Infinity;
@@ -50,10 +52,32 @@ public abstract class CharacterEntity : Entity
         attackStrategy = GetComponent<AttackStrategy>();
         isFacingRight = transform.localScale.x > 0;
     }
+    
+    [Server]
+    public void Knockback(Vector2 knockbackDirection, float knockbackForce, float knockbackTime, float stunTime)
+    {
+        if (isStunned || IsDead) return;
+        
+        Debug.Log($"[{name}] Knockback chiamato da {knockbackDirection} con forza {knockbackForce}, durata knockback {knockbackTime}, durata stun {stunTime}");
+        Rb.linearVelocity = knockbackDirection.normalized * knockbackForce;
+        StartCoroutine(StunTimer(knockbackTime, stunTime));
 
+    }
+
+    IEnumerator StunTimer(float knockbackTime, float stunTime)
+    {
+        isStunned = true;
+        yield return new WaitForSeconds(knockbackTime);
+        Rb.linearVelocity = Vector2.zero;
+        yield return new WaitForSeconds(stunTime);
+        isStunned = false;
+    }
+    
     [Server]
     public void SetFacingDirection(bool faceRight)
     {
+        if (isStunned) return;
+        
         if (isFacingRight == faceRight) return;
 
         Debug.Log($"[{name}] SetFacingDirection chiamato: {faceRight}");
@@ -62,20 +86,17 @@ public abstract class CharacterEntity : Entity
         RpcNotifyFlipToRight(faceRight); 
     }
 
-    private void Update()
-    {
-        Debug.Log("[" + name +"] IsFacingRight: " + isFacingRight);
-    }
-
     [Server]
     public void ChangePosition(Vector2 direction, bool isSprinting = false)
     {
+        if (isStunned) return;
         Rb.linearVelocity = (isSprinting ? 2 : 1) * direction.normalized * speed ;
     }
 
     [Server]
     public void AttackCharacter(TargetInfo targetInfo)
     {
+        if (isStunned) return;
         if (!IsReadyToAttack()) return;
         TriggerAttackEvent();
         attackStrategy.Attack(this, targetInfo);

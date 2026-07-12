@@ -8,9 +8,15 @@ public class Projectile : NetworkBehaviour
     private Rigidbody2D rb;
     private bool despawned = false; // guard anti doppia Destroy
 
+    [SerializeField] private float knockbackForce;
+    [SerializeField] private float knockbackTime;
+    [SerializeField] private float stunTime;
+
+
     [SerializeField] private LayerMask targetLayer;
+    [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private float speed;
-    
+
     private int damage;
     public int Damage { get => damage; set => damage = value; }
 
@@ -49,14 +55,25 @@ public class Projectile : NetworkBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!inVolo) return;
-        if (((1 << other.gameObject.layer) & targetLayer) == 0) return;
 
-        CharacterEntity target = other.GetComponentInParent<CharacterEntity>();
-        if (target != null)
+        // Colpisce un bersaglio
+        if (((1 << other.gameObject.layer) & targetLayer) != 0)
         {
-            target.TakeDamage(damage);
-            inVolo = false;
-            DespawnProjectile();
+            CharacterEntity target = other.GetComponentInParent<CharacterEntity>();
+
+            if (target != null)
+            {
+                target.TakeDamage(damage);
+                
+                // KNOCKBACK
+                Vector2 direzioneVolo = (puntoArrivo - rb.position).normalized;
+                target.Knockback(direzioneVolo, knockbackForce, knockbackTime, stunTime);
+
+                inVolo = false;
+                DespawnProjectile();
+            }
+
+            return;
         }
     }
 
@@ -64,6 +81,7 @@ public class Projectile : NetworkBehaviour
     private void DespawnProjectile()
     {
         if (despawned) return;
+
         despawned = true;
         NetworkServer.Destroy(gameObject);
     }

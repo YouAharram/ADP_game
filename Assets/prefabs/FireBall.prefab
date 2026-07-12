@@ -229,4 +229,7 @@ MonoBehaviour:
   targetLayer:
     serializedVersion: 2
     m_Bits: 320
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 2048
   speed: 3
