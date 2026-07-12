@@ -245,3 +245,4 @@ MonoBehaviour:
   speed: 10
   sr: {fileID: 7846381100341947418}
   buriedSprite: {fileID: 2280123010808302456, guid: 8d805c526c70c00918c9e738343dc3ae, type: 3}
+  buriedDownSprite: {fileID: -7401632418152656277, guid: 3e002219fa9fdfbd0a177b2ccc3f2d02, type: 3}

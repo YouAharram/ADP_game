@@ -22,6 +22,25 @@ public class Projectile : NetworkBehaviour
     
     [SerializeField] private Sprite buriedDownSprite;
     
+    [SyncVar] private bool isFlipped;
+
+    public void SetFlip(bool flipped)
+    {
+        isFlipped = flipped;
+    }
+
+    private void Start()
+    {
+        ApplyFlip();
+    }
+
+    private void ApplyFlip()
+    {
+        Vector3 scale = transform.localScale;
+        scale.x = isFlipped ? -Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
+        transform.localScale = scale;
+    }
+    
     private int damage;
     public int Damage { get => damage; set => damage = value; }
 
@@ -53,6 +72,7 @@ public class Projectile : NetworkBehaviour
         {
             inVolo = false;
             RpcAttachDown();
+            Invoke(nameof(DespawnProjectile), 3f);
         }
     }
 
