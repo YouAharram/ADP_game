@@ -410,6 +410,9 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  knockbackForce: 3
+  knockbackTime: 0.2
+  stunTime: 0.1
 --- !u!114 &-828055168800502279
 MonoBehaviour:
   m_ObjectHideFlags: 0

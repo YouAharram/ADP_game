@@ -54,7 +54,7 @@ public abstract class CharacterEntity : Entity
     }
     
     [Server]
-    public void Knockback(Vector2 knockbackDirection, float knockbackForce, float knockbackTime, float stunTime)
+    public override void Knockback(Vector2 knockbackDirection, float knockbackForce, float knockbackTime, float stunTime)
     {
         if (isStunned || IsDead) return;
         

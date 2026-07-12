@@ -75,6 +75,9 @@ public abstract class Entity : NetworkBehaviour
         }
     }
     
+    [Server]
+    public virtual void Knockback(Vector2 knockbackDirection, float knockbackForce, float knockbackTime, float stunTime) {}
+    
     [ClientRpc]
     private void RpcNotifyDamage(int cur, int max)
     {
