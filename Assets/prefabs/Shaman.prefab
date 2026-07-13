@@ -470,11 +470,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  maxHealth: 100
-  damage: 10
-  speed: 3
-  hitRange: 5
-  attackPeriodicity: 1.5
 --- !u!114 &4106623189611583065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -526,7 +521,7 @@ MonoBehaviour:
   rarityIndex: 4
   baseDamage: 20
   baseHealth: 75
-  baseSpeed: 3
+  baseSpeed: 2
   baseAttackPeriodicity: 1
 --- !u!1 &6544136014927018430
 GameObject:

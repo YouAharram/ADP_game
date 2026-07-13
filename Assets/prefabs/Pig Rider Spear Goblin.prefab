@@ -249,11 +249,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  maxHealth: 50
-  damage: 2
-  speed: 2
-  hitRange: 1
-  attackPeriodicity: 1.5
 --- !u!114 &431240388437003674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -411,7 +406,7 @@ MonoBehaviour:
   rarityIndex: 3
   baseDamage: 15
   baseHealth: 50
-  baseSpeed: 7
+  baseSpeed: 4
   baseAttackPeriodicity: 1
 --- !u!4 &8013678014557397029 stripped
 Transform:

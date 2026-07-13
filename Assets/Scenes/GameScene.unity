@@ -501,7 +501,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   castle: {fileID: 683444748}
-  castleBaseHealth: 1000
+  castleBaseHealth: 10000
   enemyPrefabs:
   - {fileID: 4699449289732389676, guid: f39321df085b61e9c91cb030dd051b30, type: 3}
   - {fileID: 7123488711396460608, guid: e99d824d4fcfff2879c04b8742350866, type: 3}

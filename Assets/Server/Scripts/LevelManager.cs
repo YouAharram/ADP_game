@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
 public class LevelManager : NetworkBehaviour
 {
-    private const int maxLevel = 5;
-    private int level = 1;
+    private const int maxLevel = 20;
+    [SyncVar] private int level = 1;
     private int totalEnemiesQuantity;   
     private int enemyHealthIncrement;
     private int enemyDamageIncrement;
@@ -15,6 +16,7 @@ public class LevelManager : NetworkBehaviour
     private int castleDamageIncrement;
     
     private EnemyPrefabExtractor enemyExtractor;
+    private List<PythonChallenge> pythonChallenges;
 
     public EnemyPrefabExtractor EnemyExtractor { get => enemyExtractor; set => enemyExtractor = value; }
     public int Level => level;
@@ -30,6 +32,19 @@ public class LevelManager : NetworkBehaviour
         castleDamageIncrement = 0;
         
         totalEnemiesQuantity = CalculateTotalEnemiesQuantity();
+
+        pythonChallenges = new List<PythonChallenge>();
+        SetPythonChallenges();
+    }
+
+    private void SetPythonChallenges()
+    {
+        pythonChallenges.Add(new EvenOddChallenge());
+        pythonChallenges.Add(new PercentageChallenge());
+        pythonChallenges.Add(new SumChallenge());
+        pythonChallenges.Add(new SumListChallenge());
+        pythonChallenges.Add(new ProductListChallenge());
+        pythonChallenges.Add(new MaxListChallenge());
     }
 
     public void GenerateEnemies()
@@ -76,6 +91,11 @@ public class LevelManager : NetworkBehaviour
         Debug.Log($"[SERVER] Potenziato attacco a {player.name} di {increment}");
     }
 
+    public PythonChallenge GetPythonChallenge()
+    {
+        return pythonChallenges[level - 1];
+    }
+
     public void LevelUp()
     {
         level++;
@@ -106,6 +126,7 @@ public class LevelManager : NetworkBehaviour
             return amount;
         return 0;
     }
+
 
   
 

@@ -7,8 +7,6 @@ public class GameOrchestrator : NetworkBehaviour
 {
     private static GameOrchestrator instance;
 
-    // Il getter ora è semplicissimo: restituisce solo la variabile.
-    // Se è null, lancia un errore chiaro invece di fare casini.
     public static GameOrchestrator Instance
     {
         get
@@ -25,7 +23,6 @@ public class GameOrchestrator : NetworkBehaviour
     {
         Debug.Log("[GameOrchestrator] Awake chiamato sul NOSTRO GameObject legittimo.");
 
-        // Controllo anti-duplicazione (Pattern Singleton classico)
         if (instance != null && instance != this)
         {
             Debug.LogWarning($"[GameOrchestrator] Rilevato un duplicato nella scena su {gameObject.name}. Lo distruggo.");
@@ -33,11 +30,13 @@ public class GameOrchestrator : NetworkBehaviour
             return;
         }
 
-        // Assegnazione ufficiale dell'istanza
         instance = this;
+        
+        if (levelManager == null)
+        {
+            levelManager = GetComponent<LevelManager>();
+        }
 
-        // Se vuoi che sopravviva ai cambi di scena (opzionale, valuta tu se serve)
-        // DontDestroyOnLoad(gameObject);
     }
     
     private List<PlayerEntity> players = new List<PlayerEntity>();
@@ -58,7 +57,8 @@ public class GameOrchestrator : NetworkBehaviour
     private int alivePlayers = 0;
     private int readyPlayersForNextLevel = 0;
 
-    public List<GameObject> EnemyPrefabs { get => enemyPrefabs;}
+    public List<GameObject> EnemyPrefabs => enemyPrefabs;
+    public LevelManager LevelManager  => levelManager;
 
     public void InitializeOrchestrator()
     {        
@@ -143,7 +143,7 @@ public class GameOrchestrator : NetworkBehaviour
             return;
         }
         readyPlayersForNextLevel = 0;
-        RpcShowUpgradeBanner(levelManager.Level);
+        RpcShowUpgradeBanner();
     }
 
     private void GameOver()
@@ -201,11 +201,11 @@ public class GameOrchestrator : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void RpcShowUpgradeBanner(int currentLevel)
+    private void RpcShowUpgradeBanner()
     {
         if (upgradeUIManager != null)
         {
-            upgradeUIManager.ShowBanner(currentLevel);
+            upgradeUIManager.ShowBanner();
         }
         else
         {
@@ -227,7 +227,7 @@ public class GameOrchestrator : NetworkBehaviour
         }
     }
 
-     [ClientRpc]
+    [ClientRpc]
     private void RpcShowGameWonBanner()
     {
         if (endGameUIManager != null)
