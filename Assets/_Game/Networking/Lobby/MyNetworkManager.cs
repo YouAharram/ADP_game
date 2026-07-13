@@ -128,13 +128,13 @@ public class MyNetworkManager : NetworkManager
         // In GameScene applichiamo le statistiche (MaxHealth incluso) PRIMA dello
         // spawn di rete: così i valori corretti sono già nel messaggio di spawn e
         // la barra vita del player parte piena (stessa logica dei mob).
-        PlayerEntity gameEntity = null;
+        PlayerEntity playerEntity = null;
         if (scene == "GameScene")
         {
-            gameEntity = player.GetComponent<PlayerEntity>();
-            if (gameEntity != null && GameOrchestrator.Instance != null)
+            playerEntity = player.GetComponent<PlayerEntity>();
+            if (playerEntity != null && GameOrchestrator.Instance != null)
             {
-                GameOrchestrator.Instance.ApplyInitialPlayerStats(gameEntity);
+                GameOrchestrator.Instance.AddPlayer(playerEntity);
             }
         }
 
@@ -143,9 +143,9 @@ public class MyNetworkManager : NetworkManager
         listPlayers.Add(player);    
 
         // Dopo lo spawn registriamo il player nell'orchestrator (lista, morte, avvio partita).
-        if (scene == "GameScene" && gameEntity != null && GameOrchestrator.Instance != null)
+        if (scene == "GameScene" && playerEntity != null && GameOrchestrator.Instance != null)
         {
-            GameOrchestrator.Instance.AddPlayer(gameEntity);
+            GameOrchestrator.Instance.AddPlayer(playerEntity);
         }
     }
 

@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Mirror",
-        "Game.Gameplay"
+        "Game.Gameplay",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

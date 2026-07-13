@@ -116,7 +116,7 @@ public class LevelManager : NetworkBehaviour
     private int CalculateTotalEnemiesQuantity()
     {
         if (Level < maxLevel)
-            return (int) Math.Ceiling(20 + (Level - 1)(10-0.25(Level-1)));
+            return (int) Math.Ceiling(20 + (Level - 1)*(10-0.25*(Level-1)));
         return 120;
     }
 
