@@ -14,7 +14,8 @@ public class PlayerInput : NetworkBehaviour
     void Start()
     {
         playerController = GetComponent<CharacterController>();
-        mainCam = Camera.main; 
+        mainCam = Camera.main;
+        HandleFacingDirection();
     }
 
     private Vector2 GetMouseWorldPosition()
