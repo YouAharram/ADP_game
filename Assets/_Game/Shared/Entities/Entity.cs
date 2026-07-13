@@ -91,5 +91,5 @@ public abstract class Entity : NetworkBehaviour
         if (isDead) OnDieClient?.Invoke();
     }
     
-    public abstract void Accept(CharacterVisitor characterVisitor);
+    public abstract void Accept(EntityVisitor entityVisitor);
 }

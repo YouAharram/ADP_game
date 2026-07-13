@@ -1,4 +1,3 @@
-
 using Mirror;
 using UnityEngine;
 
@@ -17,4 +16,3 @@ public class EnemyPrefabBaseStats : NetworkBehaviour
     public int BaseSpeed { get => baseSpeed;}
     public int BaseAttackPeriodicity { get => baseAttackPeriodicity;}
 }
-

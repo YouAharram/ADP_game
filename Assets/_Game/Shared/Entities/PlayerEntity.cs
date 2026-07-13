@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class PlayerEntity : CharacterEntity
 {
-    public override void Accept(CharacterVisitor characterVisitor)
+    public override void Accept(EntityVisitor entityVisitor)
     {
-        characterVisitor.VisitPlayer(this);
+        entityVisitor.VisitPlayer(this);
     }
 }

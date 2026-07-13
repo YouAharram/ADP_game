@@ -14,7 +14,7 @@ public class EnemyPrefabExpRarityExtractor : EnemyPrefabExtractor
             float extractedRarity = RollRarityValue();
 
             prefabsWithExtractedRarity = Prefabs.Where(
-                prefab => prefab.GetComponent<EnemyPrefabBaseStats>().RarityIndex == extractedRarity)
+                    prefab => prefab.GetComponent<EnemyPrefabBaseStats>().RarityIndex == extractedRarity)
                 .ToList();
             
         } while (prefabsWithExtractedRarity.Count == 0);
