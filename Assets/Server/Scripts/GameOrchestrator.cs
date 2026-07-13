@@ -3,7 +3,7 @@ using Mirror;
 using System.Collections.Generic;
 using System.Collections;
 
-public class GameOrchestrator : NetworkBehaviour, EntityVisitor
+public class GameOrchestrator : NetworkBehaviour
 {
     private static GameOrchestrator instance;
 
@@ -45,8 +45,8 @@ public class GameOrchestrator : NetworkBehaviour, EntityVisitor
     private BuildingEntity castleEntity;
 
     [SerializeField] private GameObject castle;
-    [SerializeField] private List<GameObject> enemyPrefabs;
     [SerializeField] private int castleBaseHealth;
+    [SerializeField] private List<GameObject> enemyPrefabs;
     [SerializeField] private UpgradeUIManager upgradeUIManager;
     [SerializeField] private EndGameUIManager endGameUIManager;
 
@@ -66,8 +66,10 @@ public class GameOrchestrator : NetworkBehaviour, EntityVisitor
         levelManager = GetComponent<LevelManager>();
         levelManager.EnemyExtractor = new EnemyPrefabExpRarityExtractor();
         playerBaseStats = GetComponent<PlayerBaseStats>();
-        castleEntity = castle.GetComponent<BuildingEntity>();
 
+        castleEntity = castle.GetComponent<BuildingEntity>();
+        castleEntity.OnDieServer += RemoveEntity;
+        
         players.Clear();
         enemies.Clear();
         aliveEnemies = 0;
@@ -83,16 +85,16 @@ public class GameOrchestrator : NetworkBehaviour, EntityVisitor
     }
  
  
-    public void AddPlayer(PlayerEntity playerStats)
+    public void AddPlayer(PlayerEntity playerEntity)
     {
-        players.Add(playerStats);
-        playerStats.OnDieServer += RemoveEntity;
+        players.Add(playerEntity);
+        playerEntity.OnDieServer += RemoveEntity;
         alivePlayers++;
 
         if (levelManager != null && playerBaseStats != null)
         {
-            levelManager.SetPlayerStatistics(playerStats, playerBaseStats);
-            Debug.Log($"[GameOrchestrator] Statistiche applicate a {playerStats.name}");
+            levelManager.SetPlayerStatistics(playerEntity, playerBaseStats);
+            Debug.Log($"[GameOrchestrator] Statistiche applicate a {playerEntity.name}");
         }
         
         if (players.Count == NetworkServer.connections.Count)
@@ -102,41 +104,20 @@ public class GameOrchestrator : NetworkBehaviour, EntityVisitor
         }
     }
 
-    private void AddEnemy(EnemyMobEntity enemyMobStats)
+    private void AddEnemy(EnemyMobEntity enemyMobEntity)
     {
-        enemies.Add(enemyMobStats);
-        enemyMobStats.OnDieServer += RemoveEntity;
+        enemies.Add(enemyMobEntity);
+        enemyMobEntity.OnDieServer += RemoveEntity;
         aliveEnemies++;
     }
 
 
     private void RemoveEntity(Entity entity)
     {
-        entity.Accept(this);
+        entity.Accept(new RemoveEntityVisitor(this));
         NetworkServer.Destroy(entity.gameObject);
     }
 
-    public void VisitPlayer(PlayerEntity playerStats)
-    {
-        players.Remove(playerStats);
-        alivePlayers--;
-        if (alivePlayers == 0)
-            GameOver();
-    }
-
-    public void VisitEnemy(EnemyMobEntity enemyMobStats)
-    {
-        enemies.Remove(enemyMobStats);
-        aliveEnemies--;
-        if (aliveEnemies <= 0)
-            Win();
-    }
-
-    public void VisitBuilding(BuildingEntity buildingEntity)
-    {
-        if (buildingEntity.Equals(castleEntity))
-            GameOver();
-    }
     
     public void GenerateEnemy(GameObject enemyPrefab)
     {
@@ -145,7 +126,7 @@ public class GameOrchestrator : NetworkBehaviour, EntityVisitor
             EnemySpawnerStrategy.EastRandomPosition(), 
             Quaternion.identity);
         
-        enemy.GetComponent<MobAI>().TargetPosition = castle.GetComponent<BuildingEntity>().GetPosition();
+        enemy.GetComponent<MobAI>().TargetPosition = castleEntity.GetPosition();
         EnemyMobEntity enemyStats = enemy.GetComponent<EnemyMobEntity>();
         levelManager.SetEnemyStatistics(enemyStats, enemy.GetComponent<EnemyPrefabBaseStats>());
             
@@ -260,5 +241,40 @@ public class GameOrchestrator : NetworkBehaviour, EntityVisitor
         
     }
 
+
+    private class RemoveEntityVisitor : EntityVisitor
+    {
+        private readonly GameOrchestrator gameOrchestrator;
+        
+        public RemoveEntityVisitor(GameOrchestrator gameOrchestrator)
+        {
+            this.gameOrchestrator = gameOrchestrator;
+        }
+
+        public void VisitPlayer(PlayerEntity playerStats)
+        {
+            gameOrchestrator.players.Remove(playerStats);
+            gameOrchestrator.alivePlayers--;
+            if (gameOrchestrator.alivePlayers <= 0)
+                gameOrchestrator.GameOver();
+        }
+
+        public void VisitEnemy(EnemyMobEntity enemyMobStats)
+        {
+            gameOrchestrator.enemies.Remove(enemyMobStats);
+            gameOrchestrator.aliveEnemies--;
+            if (gameOrchestrator.aliveEnemies <= 0)
+                gameOrchestrator.Win();
+        }
+
+        public void VisitBuilding(BuildingEntity buildingEntity)
+        { 
+            gameOrchestrator.GameOver();
+        }
+    
+    }
+
 }
+ 
+
  

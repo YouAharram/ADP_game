@@ -501,13 +501,13 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   castle: {fileID: 683444748}
+  castleBaseHealth: 1000
   enemyPrefabs:
   - {fileID: 4699449289732389676, guid: f39321df085b61e9c91cb030dd051b30, type: 3}
   - {fileID: 7123488711396460608, guid: e99d824d4fcfff2879c04b8742350866, type: 3}
   - {fileID: 4699449289732389676, guid: b57be929b6ab06d8d90eb6bfa9cbcd90, type: 3}
   - {fileID: 4699449289732389676, guid: 321c668ea2d08e9fea3e9127697d8ac2, type: 3}
   - {fileID: 8529301805953909890, guid: 57cdbce7bad76d1f2b31a6a93f678006, type: 3}
-  castleBaseHealth: 10000
   upgradeUIManager: {fileID: 1969884772}
   endGameUIManager: {fileID: 1969884777}
 --- !u!114 &342642348
