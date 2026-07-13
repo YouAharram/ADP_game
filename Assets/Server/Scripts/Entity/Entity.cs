@@ -80,6 +80,6 @@ public abstract class Entity : NetworkBehaviour
         }
     }
     
-    public abstract void Accept(CharacterVisitor characterVisitor);
+    public abstract void Accept(EntityVisitor characterVisitor);
 
 }
