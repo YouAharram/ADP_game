@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7485107371643843718}
-  - component: {fileID: 7489666357905980029}
+  - component: {fileID: 1237131321517823552}
   m_Layer: 6
   m_Name: Hitbox
   m_TagString: Untagged
@@ -32,8 +32,8 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2348552986141668072}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &7489666357905980029
-BoxCollider2D:
+--- !u!60 &1237131321517823552
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -76,8 +76,19 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.6, y: 1}
-  m_EdgeRadius: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.28653315, y: 0.30159307}
+      - {x: 0.03519647, y: 0.55949026}
+      - {x: -0.14046723, y: 0.51570636}
+      - {x: -0.21226716, y: 0.39093524}
+      - {x: -0.3068325, y: 0.23614794}
+      - {x: -0.43703067, y: -0.1482156}
+      - {x: -0.17865509, y: -0.38606983}
+      - {x: 0.15694898, y: -0.39078808}
+      - {x: 0.26683617, y: -0.3153277}
+      - {x: 0.27152586, y: -0.048986524}
+  m_UseDelaunayMesh: 1
 --- !u!1 &4411408235715332343
 GameObject:
   m_ObjectHideFlags: 0
@@ -103,6 +114,8 @@ GameObject:
   - component: {fileID: -1126254138716582098}
   - component: {fileID: 346962536310374689}
   - component: {fileID: 3232440317819433077}
+  - component: {fileID: 910593051698918590}
+  - component: {fileID: 8490016949266532922}
   m_Layer: 9
   m_Name: Player2
   m_TagString: Untagged
@@ -556,6 +569,120 @@ MonoBehaviour:
   syncInterval: 0
   minimapCameraName: MiniMapCamera
   zOffset: -10
+--- !u!82 &910593051698918590
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4411408235715332343}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: -1300776873258056560, guid: dd6e87938d07005a89a2a43fe558cc3c, type: 2}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &8490016949266532922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4411408235715332343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0b88c8a338c3e99b2fbefeb32a52b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Game.Client::AudioObserver
+  attackClip: {fileID: 8300000, guid: 7abde862732ffbd2fb85f459434bbbd9, type: 3}
+  deathClip: {fileID: 0}
+  hitClip: {fileID: 8300000, guid: 8092233d1cc68505dade9a7097be4a48, type: 3}
+  groanAudio: {fileID: 0}
+  pitchVariation: 0.2
 --- !u!1001 &300073638274176497
 PrefabInstance:
   m_ObjectHideFlags: 0

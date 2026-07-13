@@ -182,17 +182,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.068152964, y: 0}
+  m_Offset: {x: 0.19504213, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.40992385, y: 0.49608624}
     oldSize: {x: 1, y: 1}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.5636941, y: 0.2}
+  m_Size: {x: 0.13018322, y: 0.2}
   m_EdgeRadius: 0
 --- !u!50 &5159704049720102946
 Rigidbody2D:
@@ -236,13 +236,17 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  speed: 10
   targetLayer:
     serializedVersion: 2
     m_Bits: 128
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 2048
-  speed: 10
+  waterLayer:
+    serializedVersion: 2
+    m_Bits: 8192
   sr: {fileID: 7846381100341947418}
   buriedSprite: {fileID: 2280123010808302456, guid: 8d805c526c70c00918c9e738343dc3ae, type: 3}
   buriedDownSprite: {fileID: -7401632418152656277, guid: 3e002219fa9fdfbd0a177b2ccc3f2d02, type: 3}
+  instantDespawn: 0
