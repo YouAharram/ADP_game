@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1081909173076340354}
-  - component: {fileID: 7130855521743652719}
+  - component: {fileID: 4348708955521245546}
   m_Layer: 7
   m_Name: Hitbox
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5537798844503446345}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!60 &7130855521743652719
+--- !u!60 &4348708955521245546
 PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -78,13 +78,12 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0.0028915405, y: 0.29570258}
-      - {x: -0.20540619, y: 0.3199398}
-      - {x: -0.34429842, y: 0.16583672}
-      - {x: -0.35944122, y: -0.21287954}
-      - {x: 0.039399743, y: -0.21597385}
-      - {x: 0.091529846, y: -0.04069996}
-      - {x: 0.05972576, y: 0.09680897}
+    - - {x: 0.35050964, y: 0.42611074}
+      - {x: -0.020407736, y: 0.09221652}
+      - {x: 0.016783297, y: -0.3476125}
+      - {x: 0.28067017, y: -0.24216938}
+      - {x: 0.58051074, y: -0.316512}
+      - {x: 0.63445187, y: 0.21146506}
   m_UseDelaunayMesh: 1
 --- !u!1 &4699449289732389676
 GameObject:
@@ -110,7 +109,7 @@ GameObject:
   - component: {fileID: 422966124039848011}
   - component: {fileID: 1043949213814424316}
   m_Layer: 9
-  m_Name: PaddleSharke
+  m_Name: Minotauro
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -183,7 +182,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 10
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 198838996838928817, guid: 3f3dddf5150fb88f692990514f847dfa, type: 3}
+  m_Sprite: {fileID: -9201319144660283521, guid: 10950dffb6819f06e971a8b61bcf2a63, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -204,7 +203,7 @@ Animator:
   m_GameObject: {fileID: 4699449289732389676}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c6572b392bfcdfbc3b59eda8d9cb3e57, type: 2}
+  m_Controller: {fileID: 9100000, guid: 364747b70d60444d19b48f892ce0eb53, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -297,7 +296,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
   sceneId: 0
-  _assetId: 2510783058
+  _assetId: 2882212740
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
@@ -381,17 +380,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.19599915, y: -0.23348701}
+  m_Offset: {x: 0.2881279, y: -0.4066381}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.03, y: 0.71}
+    oldSize: {x: 1.5, y: 1.29}
     newSize: {x: 1.13, y: 1.17}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.4376831, y: 0.1706779}
+  m_Size: {x: 0.6817093, y: 0.20767128}
   m_EdgeRadius: 0
 --- !u!114 &1006008854539083740
 MonoBehaviour:
@@ -550,10 +549,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa0b88c8a338c3e99b2fbefeb32a52b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Game.Client::AudioObserver
-  attackClip: {fileID: 8300000, guid: 955e508db16298c18a4ef0d1b09abe5d, type: 3}
+  attackClip: {fileID: 8300000, guid: b58eb0afc95340ecc8b510a01de69a19, type: 3}
   deathClip: {fileID: 0}
-  hitClip: {fileID: 8300000, guid: 36629308f3cc74e70a814281fc9410b4, type: 3}
-  groanAudio: {fileID: 8300000, guid: cbd335ad3b72ae7a6a7193460b0d1597, type: 3}
+  hitClip: {fileID: 8300000, guid: 8092233d1cc68505dade9a7097be4a48, type: 3}
+  groanAudio: {fileID: 0}
   pitchVariation: 0.509
 --- !u!1001 &2887623315086545374
 PrefabInstance:
@@ -695,11 +694,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4106495198129010156, guid: a37448bffbe69d602ba5e82c786d9c88, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.2
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 4106495198129010156, guid: a37448bffbe69d602ba5e82c786d9c88, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.5
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 4106495198129010156, guid: a37448bffbe69d602ba5e82c786d9c88, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
