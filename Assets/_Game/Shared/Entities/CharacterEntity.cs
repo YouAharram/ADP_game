@@ -5,10 +5,10 @@ using System.Collections;
 
 public abstract class CharacterEntity : Entity
 {
-    private int damage;
-    private int speed;
-    private float hitRange = 2;
-    private bool isStunned = false;
+    [SyncVar] private int damage;
+    [SyncVar] private int speed;
+    [SyncVar] private float hitRange = 2;
+    [SyncVar] private bool isStunned = false;
 
     [SerializeField] private float attackPeriodicity = 0.2f;
     private float lastAttackTime = -Mathf.Infinity;
@@ -20,11 +20,28 @@ public abstract class CharacterEntity : Entity
     public event Action OnAttackingClient;
     public event Action<bool> OnFlipToRightClient;
 
+	public event Action<int> OnDamageChanged;
+
+	
     public int Damage
-    {
-        get => damage;
-        set => damage = value;
-    }
+	{
+    	get => damage;
+    	set => SetDamage(value);
+	}
+
+	[Server]
+	private void SetDamage(int value)
+	{
+   		damage = value;
+    	RpcNotifyDamage(value);
+	}	
+
+	[ClientRpc]
+	private void RpcNotifyDamage(int value)
+	{
+   		damage = value;
+   		OnDamageChanged?.Invoke(value);
+	}
 
     public int Speed
     {
