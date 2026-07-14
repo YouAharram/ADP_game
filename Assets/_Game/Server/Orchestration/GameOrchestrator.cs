@@ -2,6 +2,8 @@ using UnityEngine;
 using Mirror;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.SceneManagement;
+using System;
 
 public class GameOrchestrator : NetworkBehaviour
 {
@@ -157,7 +159,13 @@ public class GameOrchestrator : NetworkBehaviour
         Debug.Log("Partita persa, tutti i player sono stati eliminati oppure il castello è stato distrutto.");
         RemoveAllCharacters();
         RpcShowGameOverBanner();
-        StartCoroutine(DisconnectAll(5f));
+        StartCoroutine(BackToLobby(5f));
+    }
+
+	private IEnumerator BackToLobby(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        SceneFlowManager.Instance.GoToLobby();
     }
 
     private void GameWon()

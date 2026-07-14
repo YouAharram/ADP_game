@@ -4,7 +4,8 @@
     "references": [
         "Mirror",
         "Game.Gameplay",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "Game.Client"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
