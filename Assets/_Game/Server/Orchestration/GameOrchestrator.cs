@@ -45,6 +45,10 @@ public class GameOrchestrator : NetworkBehaviour
 
     [SerializeField] private GameObject castle;
     [SerializeField] private int castleBaseHealth;
+
+	[SerializeField] private GameObject archer;
+	[SerializeField] private int archerDamage;
+
     [SerializeField] private List<GameObject> enemyPrefabs;
     [SerializeField] private UpgradeUIManager upgradeUIManager;
     [SerializeField] private EndGameUIManager endGameUIManager;
@@ -69,6 +73,8 @@ public class GameOrchestrator : NetworkBehaviour
 
         castleEntity = castle.GetComponent<BuildingEntity>();
         castleEntity.OnDieServer += RemoveEntity;
+
+		archer.GetComponent<CharacterEntity>().Damage = archerDamage;
         
         players.Clear();
         enemies.Clear();
