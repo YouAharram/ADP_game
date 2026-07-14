@@ -204,6 +204,10 @@ public class MyNetworkManager : NetworkManager
     {
         base.OnServerSceneChanged(sceneName);
 
+        // I player della scena precedente sono stati distrutti dal cambio scena:
+        // i client ne ricevono di nuovi con AddPlayer, quindi ripuliamo i riferimenti morti.
+        listPlayers.RemoveAll(player => player == null);
+
         if (sceneName == "GameScene")
         {
             Debug.Log("[SERVER] GameScene caricata sul server! Inizializzo l'Orchestrator...");
