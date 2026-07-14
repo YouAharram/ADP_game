@@ -282,7 +282,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  attackPeriodicity: 0.2
+  attackPeriodicity: 0.5
 --- !u!114 &327950932173171625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -461,7 +461,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 0.98708344
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0

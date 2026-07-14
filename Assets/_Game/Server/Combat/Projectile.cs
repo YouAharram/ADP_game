@@ -156,10 +156,9 @@ public class Projectile : NetworkBehaviour
     {
         inVolo = false;
 
-        // Se il proiettile sta per essere distrutto a momenti (instantDespawn,
-        // oppure impatto in acqua) evitiamo di applicare sprite/fisica
-        // "conficcata" solo per vederle sparire un istante dopo: basta
-        // nascondere il rendering e fermare la fisica.
+        // Quando la freccia non è più in volo, viene renderizzata sopra.
+        SetBuriedSortingOrder();
+
         if (ShouldDespawnInstantly(type))
         {
             HideAndFreeze();
@@ -171,15 +170,16 @@ public class Projectile : NetworkBehaviour
             case ImpactType.Enemy:
                 AttachToEnemy(targetIdentity, targetHealth, localOffset);
                 break;
+
             case ImpactType.Obstacle:
                 BuryInPlace(buriedSprite);
                 break;
+
             case ImpactType.Ground:
                 BuryInPlace(buriedDownSprite);
                 break;
         }
     }
-
     private void AttachToEnemy(NetworkIdentity targetIdentity, float targetHealth, Vector2 localOffset)
     {
         // Il target puo' essere gia' stato distrutto/non piu' osservato da questo
@@ -262,5 +262,15 @@ public class Projectile : NetworkBehaviour
         if (despawned) return;
         despawned = true;
         NetworkServer.Destroy(gameObject);
+    }
+
+    [SerializeField] private int buriedSortingOrder = 10;
+
+    private void SetBuriedSortingOrder()
+    {
+        if (sr != null)
+        {
+            sr.sortingOrder = buriedSortingOrder;
+        }
     }
 }
