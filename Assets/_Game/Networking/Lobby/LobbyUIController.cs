@@ -27,6 +27,23 @@ public class LobbyUIController : MonoBehaviour
         public int port;
     }
 
+    void Start()
+    {
+        // Se siamo già connessi vuol dire che stiamo rientrando in lobby a fine partita
+        // (il server ha fatto ServerChangeScene): il party non è mai stato sciolto, quindi
+        // saltiamo il menu Crea/Partecipa e ripristiniamo direttamente la lobby.
+        if (NetworkClient.isConnected)
+        {
+            currentCode = SceneFlowManager.Instance.partyCode;
+            partyCodeText.text = "CODE: " + currentCode;
+
+            if (lobbyPanel != null) lobbyPanel.SetActive(true);
+            if (menuPanel != null) menuPanel.SetActive(false);
+
+            Debug.Log($"[CLIENT] Rientro in lobby, party ancora attivo: {currentCode}");
+        }
+    }
+
     public void OnCreateParty() => StartCoroutine(CreateParty());
 
     IEnumerator CreateParty()
@@ -42,8 +59,7 @@ public class LobbyUIController : MonoBehaviour
         }
 
         var res = JsonUtility.FromJson<PartyResponse>(req.downloadHandler.text);
-        currentCode = res.code;
-        partyCodeText.text = "CODE: " + currentCode;
+        SetPartyCode(res.code);
 
         yield return new WaitForSeconds(1.0f);
         ConnectToMirrorServer(res.ip, (ushort)res.port);
@@ -65,10 +81,18 @@ public class LobbyUIController : MonoBehaviour
         }
 
         var res = JsonUtility.FromJson<PartyResponse>(req.downloadHandler.text);
-        currentCode = res.code;
-        partyCodeText.text = "CODE: " + currentCode;
+        SetPartyCode(res.code);
 
         ConnectToMirrorServer(res.ip, (ushort)res.port);
+    }
+
+    // Il codice viene salvato anche sullo SceneFlowManager (DontDestroyOnLoad) così
+    // resta disponibile quando a fine partita si rientra nella LobbyScene.
+    void SetPartyCode(string code)
+    {
+        currentCode = code;
+        SceneFlowManager.Instance.partyCode = code;
+        partyCodeText.text = "CODE: " + currentCode;
     }
 
     void ConnectToMirrorServer(string ip, ushort port)
@@ -102,6 +126,7 @@ public class LobbyUIController : MonoBehaviour
         // Resettiamo la UI locale del giocatore
         partyCodeText.text = "CODE: ----";
         currentCode = "";
+        SceneFlowManager.Instance.partyCode = "";
         partyCodeInput.text = "";
 
         if (lobbyPanel != null) lobbyPanel.SetActive(false);

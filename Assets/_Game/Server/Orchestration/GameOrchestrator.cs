@@ -2,7 +2,6 @@ using UnityEngine;
 using Mirror;
 using System.Collections.Generic;
 using System.Collections;
-using UnityEngine.SceneManagement;
 
 public class GameOrchestrator : NetworkBehaviour
 {
@@ -158,6 +157,17 @@ public class GameOrchestrator : NetworkBehaviour
         Debug.Log("Partita persa, tutti i player sono stati eliminati oppure il castello è stato distrutto.");
         RemoveAllCharacters();
         RpcShowGameOverBanner();
+        StartCoroutine(BackToLobby(5f));
+    }
+
+    // Riporta TUTTI i client nella lobby restando nello stesso party: il cambio scena
+    // passa da Mirror (come CheckIfAllReady -> GameScene), quindi le connessioni non
+    // vengono chiuse e il server è sempre lo stesso. Nessuna dipendenza da SceneFlowManager.
+    [Server]
+    private IEnumerator BackToLobby(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        NetworkManager.singleton.ServerChangeScene("LobbyScene");
     }
 
     private void GameWon()
@@ -231,25 +241,6 @@ public class GameOrchestrator : NetworkBehaviour
         {
             Debug.Log("EndGameUIManager non presente nell'inspector!");
         }
-
-        StartCoroutine(BackToLobby(5f));
-    }
-
-    // Il ritorno alla lobby è gestito dal client (questa coroutine parte dentro una
-    // [ClientRpc]): il server non deve conoscere il flusso delle scene, così Game.Server
-    // resta indipendente da SceneFlowManager e da tutto il codice client.
-    private IEnumerator BackToLobby(float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-
-        // La LobbyScene si aspetta un client non connesso: è lei a ricreare/entrare
-        // in un party e a chiamare StartClient().
-        if (NetworkClient.isConnected)
-        {
-            NetworkManager.singleton.StopClient();
-        }
-
-        SceneManager.LoadScene("LobbyScene");
     }
 
     [ClientRpc]

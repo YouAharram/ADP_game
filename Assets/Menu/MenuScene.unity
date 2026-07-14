@@ -3237,6 +3237,7 @@ MonoBehaviour:
   playerName: 
   pendingIp: 
   pendingPort: 0
+  partyCode: 
 --- !u!4 &865400593
 Transform:
   m_ObjectHideFlags: 0
