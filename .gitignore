@@ -20,3 +20,14 @@ UserSettings/
 *.pdb
 *.mdb
 *.opendb
+
+
+venv/
+venv/
+ENV/
+__pycache__/
+*.pyc
+
+
+/[Bb]uild/
+/[Bb]uilds/
