@@ -154,6 +154,20 @@ public class GameOrchestrator : NetworkBehaviour
         }
         readyPlayersForNextLevel = 0;
         RpcShowUpgradeBanner();
+        
+        // facciamo partire un time, cosi se un giocatore creashsa mentre fa il quiz
+        // dopo un tempo massimo si passa al livello successivo
+        float timeToWait = levelManager.GetPythonChallenge().GetTimeOut();
+        float offset = 20f; // offset di sicurezza
+        StartCoroutine(WaitForAllPlayersReady(timeToWait + offset));
+    }
+
+    private IEnumerator WaitForAllPlayersReady(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        Debug.Log("Timeout scaduto, passaggio al livello successivo!");
+        levelManager.LevelUp();
+        StartLevel();
     }
 
     private void GameOver()
@@ -208,9 +222,7 @@ public class GameOrchestrator : NetworkBehaviour
                 levelManager.ApplyIndividualUpgrade(playerEntity, increment);
             }
 
-            Debug.Log("PRINA PLAYERS READY VALE " + readyPlayersForNextLevel);
             readyPlayersForNextLevel++;
-            Debug.Log("PRINA PLAYERS READY VALE " + readyPlayersForNextLevel);
 
 
             if (readyPlayersForNextLevel >= NetworkServer.connections.Count)
