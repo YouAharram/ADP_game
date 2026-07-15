@@ -8,8 +8,10 @@ public class PythonCodeRunner : MonoBehaviour
     private PythonChallenge pythonChallenge;
 
     public string QuestionText { get => pythonChallenge.GetQuestionText(); }
-    public string AnswerText { get => answerText;}
+    public string AnswerText { get => answerText; }
+    public float TimeOut { get => pythonChallenge.GetTimeOut(); }
     public PythonChallenge PythonChallenge { set => pythonChallenge = value; }
+
 
     public int ExecuteCode(string codeToExecute)
     {
@@ -23,11 +25,13 @@ public class PythonCodeRunner : MonoBehaviour
 
     private int RunPythonProcess(string pythonCode)
     {
+
         string tempFilePath = Path.Combine(Application.temporaryCachePath, "temp_quiz.py");
         File.WriteAllText(tempFilePath, pythonCode);
 
         ProcessStartInfo start = new ProcessStartInfo();
-        start.FileName = "python3"; 
+            
+        start.FileName = "python3";
         start.Arguments = tempFilePath;
         start.UseShellExecute = false;
         start.RedirectStandardOutput = true;
@@ -58,7 +62,7 @@ public class PythonCodeRunner : MonoBehaviour
                 
                 if (File.Exists(tempFilePath)) File.Delete(tempFilePath);
 
-                answerText = "Error! The code took too long to execute (likely an infinite loop).";
+                answerText = "Error! The code took too long to execute (likely an infinite loop). Upgrade failed.";
                 return 0;                
             }
 
@@ -68,7 +72,7 @@ public class PythonCodeRunner : MonoBehaviour
 
         if (!string.IsNullOrEmpty(error))
         {
-            answerText = error.Split('\n')[error.Split('\n').Length - 2];
+            answerText = error.Split('\n')[error.Split('\n').Length - 2] + ". Upgrade failed.";
             return 0;
         }
 

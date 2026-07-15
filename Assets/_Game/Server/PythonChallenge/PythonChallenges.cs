@@ -22,11 +22,13 @@ public abstract class PythonChallenge
     {
         if (ValidateResult(code, result))
         {
-            return "The code compiles! The value found is " + result + ". Your parameter will increase by " + result;
+            return "The code compiles! The value found is " + result + ". Your attack will increase by " + result;
         }
 
-        return "Incorrect code! Increment not performed.";
+        return "Incorrect code! Upgrade failed.";
     }
+
+    public abstract float GetTimeOut();
 
     protected abstract string SetupVariables();
     protected abstract string GetSpecificQuestionText();
@@ -40,6 +42,11 @@ public abstract class PythonChallenge
 public class EvenOddChallenge : PythonChallenge
 {
     private int a, b;
+
+    public override float GetTimeOut()
+    {
+        return 60f;
+    }
 
     protected override string GetSpecificQuestionText()
     {
@@ -77,6 +84,11 @@ public class PercentageChallenge : PythonChallenge
 {
     private int x;
 
+    public override float GetTimeOut()
+    {
+        return 60f;
+    }
+
     protected override string GetSpecificQuestionText()
     {
         return "A variable 'x' is declared. Write Python code to calculate 20% of x "
@@ -104,6 +116,12 @@ public class PercentageChallenge : PythonChallenge
 public class SumChallenge : PythonChallenge
 {
     private int n;
+
+    public override float GetTimeOut()
+    {
+        return 60f;
+    }
+
     protected override string GetSpecificQuestionText()
     {
         return "A variable 'n' is declared. Write Python code to calculate the sum "
@@ -132,6 +150,11 @@ public class SumListChallenge : PythonChallenge
 {
     private List<int> list;
 
+    public override float GetTimeOut()
+    {
+        return 90f;
+    }
+
     protected override string GetSpecificQuestionText()
     {
         return "A list of numbers named 'list' has been declared and instantiated. "
@@ -147,7 +170,7 @@ public class SumListChallenge : PythonChallenge
 
         for (int i = 0; i < listLength; i++)
         {
-            list.Add(Random.Range(1, 21));
+            list.Add(Random.Range(0, 4));
         }
 
         string listAsPythonArray = "[" + string.Join(", ", list) + "]";
@@ -174,6 +197,11 @@ public class ProductListChallenge : PythonChallenge
 {
     private List<int> list;
 
+    public override float GetTimeOut()
+    {
+        return 90f;
+    }
+
     protected override string GetSpecificQuestionText()
     {
         return "A list of numbers named 'list' has been declared and instantiated. "
@@ -189,7 +217,7 @@ public class ProductListChallenge : PythonChallenge
 
         for (int i = 0; i < listLength; i++)
         {
-            list.Add(Random.Range(1, 6));
+            list.Add(Random.Range(1, 8));
         }
 
         string listAsPythonArray = "[" + string.Join(", ", list) + "]";
@@ -215,6 +243,11 @@ public class ProductListChallenge : PythonChallenge
 public class MaxListChallenge : PythonChallenge
 {
     private List<int> list;
+
+    public override float GetTimeOut()
+    {
+        return 90f;
+    }
 
     protected override string GetSpecificQuestionText()
     {
