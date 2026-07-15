@@ -53,7 +53,6 @@ public class GameOrchestrator : NetworkBehaviour
     [SerializeField] private UpgradeUIManager upgradeUIManager;
     [SerializeField] private EndGameUIManager endGameUIManager;
 
-
     private LevelManager levelManager;
 
     private PlayerBaseStats playerBaseStats;
@@ -61,8 +60,11 @@ public class GameOrchestrator : NetworkBehaviour
     private int alivePlayers = 0;
     private int readyPlayersForNextLevel = 0;
 
+    private bool questionPhase = false;
+
     public List<GameObject> EnemyPrefabs => enemyPrefabs;
     public LevelManager LevelManager  => levelManager;
+
 
     public void InitializeOrchestrator()
     {        
@@ -80,8 +82,30 @@ public class GameOrchestrator : NetworkBehaviour
         enemies.Clear();
         aliveEnemies = 0;
         alivePlayers = 0;
+        questionPhase = false;
 
         StartLevel();
+    }
+
+
+    void Update()
+    {
+        if (questionPhase && readyPlayersForNextLevel >= NetworkServer.connections.Count)
+        {
+            levelManager.LevelUp();
+            Debug.Log("Tutti i giocatori sono pronti! Passaggio al livello successivo...");
+            StartLevel();   
+        }
+        
+        if (NetworkServer.connections.Count != alivePlayers)
+        {
+            alivePlayers = NetworkServer.connections.Count;
+            if (alivePlayers <= 0)
+            {
+                GameOver();
+            }
+        }
+        
     }
 
     private void StartLevel()
@@ -205,13 +229,6 @@ public class GameOrchestrator : NetworkBehaviour
             }
 
             readyPlayersForNextLevel++;
-            
-            if (readyPlayersForNextLevel >= NetworkServer.connections.Count)
-            {
-                levelManager.LevelUp();
-                Debug.Log("Tutti i giocatori sono pronti! Passaggio al livello successivo...");
-                StartLevel();
-            }
         }
 
     }
