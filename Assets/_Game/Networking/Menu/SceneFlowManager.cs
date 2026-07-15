@@ -9,6 +9,11 @@ public class SceneFlowManager : MonoBehaviour
     public string pendingIp;
     public int pendingPort;
 
+    // Codice del party corrente. Vive qui (oggetto DontDestroyOnLoad) perché deve
+    // sopravvivere al passaggio LobbyScene -> GameScene -> LobbyScene: a fine partita
+    // il server ci riporta in lobby senza disconnetterci, quindi il party è ancora lo stesso.
+    public string partyCode;
+
     void Awake()
     {
         if (Instance != null && Instance != this)

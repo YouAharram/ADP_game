@@ -157,7 +157,17 @@ public class GameOrchestrator : NetworkBehaviour
         Debug.Log("Partita persa, tutti i player sono stati eliminati oppure il castello è stato distrutto.");
         RemoveAllCharacters();
         RpcShowGameOverBanner();
-        StartCoroutine(DisconnectAll(5f));
+        StartCoroutine(BackToLobby(5f));
+    }
+
+    // Riporta TUTTI i client nella lobby restando nello stesso party: il cambio scena
+    // passa da Mirror (come CheckIfAllReady -> GameScene), quindi le connessioni non
+    // vengono chiuse e il server è sempre lo stesso. Nessuna dipendenza da SceneFlowManager.
+    [Server]
+    private IEnumerator BackToLobby(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        NetworkManager.singleton.ServerChangeScene("LobbyScene");
     }
 
     private void GameWon()
