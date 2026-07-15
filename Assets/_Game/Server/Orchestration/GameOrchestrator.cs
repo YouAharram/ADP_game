@@ -60,6 +60,8 @@ public class GameOrchestrator : NetworkBehaviour
     private int alivePlayers = 0;
     [SyncVar] private int readyPlayersForNextLevel = 0;
 
+    private int giocatoriIniziali = 0;
+
     public List<GameObject> EnemyPrefabs => enemyPrefabs;
     public LevelManager LevelManager  => levelManager;
 
@@ -97,6 +99,7 @@ public class GameOrchestrator : NetworkBehaviour
         players.Add(playerEntity);
         playerEntity.OnDieServer += RemoveEntity;
         alivePlayers++;
+        giocatoriIniziali++;
 
         if (levelManager != null && playerBaseStats != null)
         {
@@ -225,7 +228,7 @@ public class GameOrchestrator : NetworkBehaviour
     {
         if (NetworkClient.localPlayer == null)
         {
-            readyPlayersForNextLevel++;
+            PlayerDied();
             return;
         }
 
@@ -267,6 +270,11 @@ public class GameOrchestrator : NetworkBehaviour
         
     }
 
+    [Command(requiresAuthority = false)]
+    private void PlayerDied()
+    {
+        readyPlayersForNextLevel++;
+    }
 
     private class RemoveEntityVisitor : EntityVisitor
     {
@@ -281,7 +289,7 @@ public class GameOrchestrator : NetworkBehaviour
         {
             gameOrchestrator.players.Remove(playerStats);
             gameOrchestrator.alivePlayers--;
-            if (gameOrchestrator.alivePlayers <= 0)
+            if (gameOrchestrator.alivePlayers <= 0 || gameOrchestrator.giocatoriIniziali - gameOrchestrator.alivePlayers == NetworkServer.connections.Count)
                 gameOrchestrator.GameOver();
         }
 
