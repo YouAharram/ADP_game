@@ -24,7 +24,7 @@ public abstract class Entity : NetworkBehaviour
     public int MaxHealth 
     { 
         get => maxHealth; 
-        [Server] set { maxHealth = value; currentHealth = maxHealth; }
+        [Server] set { maxHealth = value; currentHealth = maxHealth; RpcNotifyDamage(currentHealth, maxHealth);}
     }
     
     public int CurrentHealth => currentHealth;
