@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LevelManager : NetworkBehaviour
 {
-    private const int maxLevel = 6;
+    private const int maxLevel = 7;
     [SyncVar] private int level = 1;
     private int totalEnemiesQuantity;   
     private int enemyHealthIncrement;
@@ -108,8 +108,12 @@ public class LevelManager : NetworkBehaviour
 
         enemyHealthIncrement += IncrementStatistic(10);
         enemyDamageIncrement += IncrementStatistic(5);
-        enemySpeedIncrement += IncrementStatistic(1);
-        
+
+        if (level % 3 == 0)
+            enemySpeedIncrement += IncrementStatistic(1);
+        else
+            enemySpeedIncrement += IncrementStatistic(0);
+
         castleDamageIncrement += IncrementStatistic(100);
     }
 

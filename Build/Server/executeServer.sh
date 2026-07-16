@@ -1,2 +1,2 @@
-source .venv/bin/activate
-uvicorn master_server:app --host 10.73.71.229 --port 8000 --reload
+source venv/bin/activate
+uvicorn master_server:app --host 192.168.1.22 --port 8000 --reload

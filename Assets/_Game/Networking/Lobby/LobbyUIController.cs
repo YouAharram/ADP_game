@@ -16,7 +16,7 @@ public class LobbyUIController : MonoBehaviour
     public GameObject lobbyPanel; // Il pannello che mostra il codice e la lista giocatori
     public GameObject menuPanel;  // Il pannello iniziale con i tasti Crea/Partecipa
 
-    const string baseUrl = "http://10.73.71.243:8000";
+    const string baseUrl = "http://192.168.1.22:8000";
     string currentCode;
 
     [System.Serializable]
