@@ -100,3 +100,9 @@ Dopo aver modificato `LobbyUIController.cs`, effettuare una nuova build del:
 - Client
 
 ---
+
+## NOTA BENE
+Su Mac potrebbe essere necessario dover inserire il proprio indirizzo ip sul client avviando il server con il comando:
+```bash
+uvicorn master_server:app --host 0.0.0.0 --port 8000 --reload
+```
