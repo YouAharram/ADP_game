@@ -162,6 +162,39 @@ public class GameOrchestrator : NetworkBehaviour
         StartCoroutine(WaitForAllPlayersReady(timeToWait + offset));
     }
 
+        public void BackToMenu()
+    {
+        NetworkManager networkManager = NetworkManager.singleton;
+
+       bool serverRunning = NetworkServer.active;
+        bool clientRunning = NetworkClient.active;
+
+        if (networkManager == null || (!serverRunning && !clientRunning))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MenuScene");
+            return;
+        }
+
+       networkManager.offlineScene = "MenuScene";
+
+        if (serverRunning && clientRunning)
+        {
+            // Sono host (server + client): chiudo tutto
+            networkManager.StopHost();
+        }
+        else if (clientRunning)
+        {
+            // Sono solo client: mi disconnetto dal server
+            networkManager.StopClient();
+        }
+        else
+        {
+            // Sono solo server dedicato
+            networkManager.StopServer();
+        }
+
+       }
+
     private IEnumerator WaitForAllPlayersReady(float seconds)
     {
         yield return new WaitForSeconds(seconds);

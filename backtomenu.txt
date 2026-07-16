@@ -1,0 +1,42 @@
+    public void BackToMenu()
+    {
+        NetworkManager networkManager = NetworkManager.singleton;
+
+        // Usiamo .active e non .isConnected: copre anche il client che si sta ancora
+        // connettendo, che altrimenti resterebbe appeso senza che nessun ramo lo fermi.
+        bool serverRunning = NetworkServer.active;
+        bool clientRunning = NetworkClient.active;
+
+        // Niente rete attiva (o NetworkManager già distrutto): carichiamo il menu e basta.
+        if (networkManager == null || (!serverRunning && !clientRunning))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MenuScene");
+            return;
+        }
+
+        // Lasciamo caricare MenuScene a Mirror invece di farlo a mano qui sotto: Mirror lo fa
+        // quando lo smontaggio è davvero finito (StopServer -> ServerChangeScene per l'host,
+        // OnClientDisconnect -> ClientChangeOfflineScene per il client). Caricare la scena
+        // subito dopo StopHost/StopClient distrugge invece la GameScene mentre Mirror sta
+        // ancora smontando connessioni e oggetti spawnati.
+        networkManager.offlineScene = "MenuScene";
+
+        if (serverRunning && clientRunning)
+        {
+            // Sono host (server + client): chiudo tutto
+            networkManager.StopHost();
+        }
+        else if (clientRunning)
+        {
+            // Sono solo client: mi disconnetto dal server
+            networkManager.StopClient();
+        }
+        else
+        {
+            // Sono solo server dedicato
+            networkManager.StopServer();
+        }
+
+        // Da qui in poi questo GameObject può essere già stato disattivato da Mirror
+        // (in host mode lo smontaggio è sincrono): non tocchiamo più 'this'.
+    }

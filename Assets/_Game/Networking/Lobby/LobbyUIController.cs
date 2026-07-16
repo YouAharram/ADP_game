@@ -86,6 +86,19 @@ public class LobbyUIController : MonoBehaviour
         ConnectToMirrorServer(res.ip, (ushort)res.port);
     }
 
+    public void OnQuitPressed()
+    {
+        Debug.Log("[MENU] Chiusura del gioco in corso...");
+
+        #if UNITY_EDITOR
+        // Se siamo dentro l'Editor di Unity, fermiamo la modalità Play
+        UnityEditor.EditorApplication.isPlaying = false;
+        #else
+        // Se siamo nella build finale del gioco, chiudiamo l'applicazione eseguibile
+        Application.Quit();
+        #endif
+    }
+
     // Il codice viene salvato anche sullo SceneFlowManager (DontDestroyOnLoad) così
     // resta disponibile quando a fine partita si rientra nella LobbyScene.
     void SetPartyCode(string code)
