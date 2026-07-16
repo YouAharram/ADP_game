@@ -61,7 +61,7 @@ async def create_party(request: CreatePartyRequest):
     if not os.path.exists(server_executable):
         server_executable = os.path.join(script_dir, "builds", "server", "lobbyserver")
     if not os.path.exists(server_executable):
-        server_executable = os.path.join(script_dir, "Server_build.x86_64")
+        server_executable = os.path.join(script_dir, "ADP_game")
 
     if not os.path.exists(server_executable):
         raise HTTPException(status_code=500, detail=f"Unity executable not found. Path: {server_executable}")
