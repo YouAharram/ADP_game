@@ -7,7 +7,7 @@ public abstract class CharacterEntity : Entity
 {
     [SyncVar] private int damage;
     [SyncVar] private int speed;
-    [SyncVar] private float hitRange = 2;
+    [SyncVar] private float hitRange = 1f;
     [SyncVar] private bool isStunned = false;
 
     [SerializeField] private float attackPeriodicity = 0.2f;

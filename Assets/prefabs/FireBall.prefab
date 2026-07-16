@@ -226,17 +226,15 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  speed: 3
+  speed: 5
   targetLayer:
     serializedVersion: 2
     m_Bits: 320
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 2048
-  waterLayer:
-    serializedVersion: 2
-    m_Bits: 8192
   sr: {fileID: 0}
   buriedSprite: {fileID: 0}
   buriedDownSprite: {fileID: 0}
   instantDespawn: 1
+  buriedSortingOrder: 10
