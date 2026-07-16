@@ -435,9 +435,9 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  rarityIndex: 1
-  baseDamage: 5
-  baseHealth: 25
+  rarityIndex: 4
+  baseDamage: 25
+  baseHealth: 100
   baseSpeed: 2
   baseAttackPeriodicity: 1
 --- !u!82 &422966124039848011
